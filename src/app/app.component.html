@@ -1,20 +1,22 @@
-<div id="mainImage">
-  <div id="titles">
-    <div id="title">
-      <span>
-        {{title}}
-      </span>
+<div id="preview">
+  <div id="previewInstagram" [class.saving]="saving">
+    <div id="titles">
+      <div id="title">
+        <span>
+          {{title}}
+        </span>
+      </div>
+      <div id="subtitle">
+        <span>
+          {{subtitle}}
+        </span>
+      </div>
     </div>
-    <div id="subtitle">
-      <span>
-        {{subtitle}}
-      </span>
+    <div id="copyright">
+      © Unverpackt-Foodcoop Karlsruhe
     </div>
+    <img id="logo" src="/assets/gpka_logo.png">
   </div>
-  <div id="copyright">
-    © Unverpackt-Foodcoop Karlsruhe
-  </div>
-  <img id="logo" src="/assets/gpka_logo.png">
 </div>
 <div id="settings">
   Überschrift: <input [(ngModel)]="title"><br>

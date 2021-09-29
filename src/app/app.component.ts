@@ -9,11 +9,20 @@ import html2canvas from "html2canvas";
 export class AppComponent {
   title = 'ZERO WASTE';
   subtitle = 'Unverpackt-Foodcoop Karlsruhe';
-  bgImage = 'https://www.unverpackt-foodcoop.de/images/IMG_4778.png'
+  saving = false;
 
   save() {
+    this.saving = true;
+
+    setTimeout(() => {
+      this.saving = false;
+      this.createImage()
+    })
+  }
+
+  createImage() {
     // @ts-ignore
-    html2canvas(document.querySelector("#mainImage")).then(canvas => {
+    html2canvas(document.querySelector("#previewInstagram")).then(canvas => {
       const link = document.createElement("a")
       link.setAttribute('download', 'picgen.png');
       link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png",
