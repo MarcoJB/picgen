@@ -1,25 +1,47 @@
 <div id="preview">
-  <div id="previewInstagram" [class.saving]="saving">
+  <div id="previewInstagram" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
+    <img id="mainImage" #mainImage src="{{mainImageSource}}">
     <div id="titles">
-      <div id="title">
+      <div id="title" *ngIf="title">
         <span>
           {{title}}
         </span>
       </div>
-      <div id="subtitle">
+      <div id="subtitle" *ngIf="subtitle">
         <span>
           {{subtitle}}
         </span>
       </div>
     </div>
     <div id="copyright">
-      © Unverpackt-Foodcoop Karlsruhe
+      {{copyright}}
     </div>
-    <img id="logo" src="/assets/gpka_logo.png">
+    <img id="logo" src="/assets/{{logoColor}}.png">
   </div>
 </div>
 <div id="settings">
   Überschrift: <input [(ngModel)]="title"><br>
   Unterüberschrift: <input [(ngModel)]="subtitle"><br>
+  Copyright: <input [(ngModel)]="copyright"><br>
+  Logo:
+  <select [(ngModel)]="logoColor">
+    <option value="logo_gpka_gt">Grün</option>
+    <option value="logo_gpka_gw">Grün auf weiß</option>
+    <option value="logo_gpka_wt">Weiß</option>
+    <option value="logo_gpka_wg">Weiß auf grün</option>
+  </select><br><br>
+  Bild: <input type="file" (change)="loadImage($event)"><br>
+  Horizontal:
+  <select [(ngModel)]="mainImageHorizontalPositioning" (change)="resetImage()">
+    <option value="LEFT">Links</option>
+    <option value="CENTER">Mitte</option>
+    <option value="RIGHT">Rechts</option>
+  </select><br>
+  Vertikal:
+  <select>
+    <option value="TOP">Oben</option>
+    <option value="CENTER">Mitte</option>
+    <option value="BOTTOM">Unten</option>
+  </select><br><br>
   <button (click)="save()">Speichern</button><br>
 </div>

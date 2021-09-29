@@ -23,9 +23,16 @@
   height: 1200px;
   font-weight: bold;
   background-color: white;
-  background-image: url(/assets/test_background.png);
-  background-size: cover;
-  background-position: center center;
+  transform-origin: top left;
+  overflow: hidden;
+}
+
+#previewInstagram.saving {
+  transform: scale(1) !important;
+}
+
+#mainImage {
+  position: absolute;
 }
 
 #titles {
@@ -71,9 +78,18 @@
   top: -80px;
 }
 
+#copyright {
+  text-shadow: 0 0 30px black;
+}
+
+#logo {
+  width: 290px;
+}
+
 #settings {
   grid-area: settings;
   color: white;
+  margin-left: 20px;
 }
 
 #copyright {
