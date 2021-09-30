@@ -1,47 +1,85 @@
-<div id="preview">
-  <div id="previewInstagram" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
-    <img id="mainImage" #mainImage src="{{mainImageSource}}">
-    <div id="titles">
-      <div id="title" *ngIf="title">
-        <span>
-          {{title}}
-        </span>
+<div id="page" [class.dragging]="dragging" (mousemove)="drag($event)" (mouseup)="deactivateDragging()">
+  <div id="preview">
+    <div id="previewInstagram" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
+      <img id="mainImage" #mainImage (mousedown)="activateDragging($event)" (wheel)="zoom($event)"
+           style="height: {{zoomFactor*mainImage.naturalHeight}}px;">
+      <div id="titles">
+        <div id="title" *ngIf="title">
+          <span>
+            {{title}}
+          </span>
+        </div>
+        <div id="subtitle" *ngIf="subtitle" [class.inverted]="subtitleColor=='green'">
+          <span>
+            {{subtitle}}
+          </span>
+        </div>
       </div>
-      <div id="subtitle" *ngIf="subtitle">
-        <span>
-          {{subtitle}}
-        </span>
+      <div id="copyright" [class.inverted]="copyrightColor=='white'" [class.shadow]="copyrightShadow">
+        {{copyright}}
       </div>
+      <img id="logo" src="/assets/{{logoColor}}.png" style="background-color: {{logoBackgroundColor}};">
     </div>
-    <div id="copyright">
-      {{copyright}}
-    </div>
-    <img id="logo" src="/assets/{{logoColor}}.png">
   </div>
-</div>
-<div id="settings">
-  Überschrift: <input [(ngModel)]="title"><br>
-  Unterüberschrift: <input [(ngModel)]="subtitle"><br>
-  Copyright: <input [(ngModel)]="copyright"><br>
-  Logo:
-  <select [(ngModel)]="logoColor">
-    <option value="logo_gpka_gt">Grün</option>
-    <option value="logo_gpka_gw">Grün auf weiß</option>
-    <option value="logo_gpka_wt">Weiß</option>
-    <option value="logo_gpka_wg">Weiß auf grün</option>
-  </select><br><br>
-  Bild: <input type="file" (change)="loadImage($event)"><br>
-  Horizontal:
-  <select [(ngModel)]="mainImageHorizontalPositioning" (change)="resetImage()">
-    <option value="LEFT">Links</option>
-    <option value="CENTER">Mitte</option>
-    <option value="RIGHT">Rechts</option>
-  </select><br>
-  Vertikal:
-  <select>
-    <option value="TOP">Oben</option>
-    <option value="CENTER">Mitte</option>
-    <option value="BOTTOM">Unten</option>
-  </select><br><br>
-  <button (click)="save()">Speichern</button><br>
+  <div id="settings">
+    <br><b>Überschrift</b><br>
+    Text: <input [(ngModel)]="title"><br><br>
+
+    <b>Unterüberschrift</b><br>
+    Text: <input [(ngModel)]="subtitle"><br>
+    Farbschema:
+    <select [(ngModel)]="subtitleColor">
+      <option value="white">Weiß auf grün</option>
+      <option value="green">Grün auf weiß</option>
+    </select><br><br>
+
+    <b>Copyright</b><br>
+    Text: <input [(ngModel)]="copyright"><br>
+    Farbe:
+    <select [(ngModel)]="copyrightColor">
+      <option value="white">Weiß</option>
+      <option value="black">Schwarz</option>
+    </select><br>
+    <input type="checkbox" [(ngModel)]="copyrightShadow"> Schatten aktivieren<br><br>
+
+    <b>Logo</b><br>
+    Farbe:
+    <select [(ngModel)]="logoColor">
+      <option value="logo_gpka_g">Grün</option>
+      <option value="logo_gpka_b">Schwarz</option>
+      <option value="logo_gpka_w">Weiß</option>
+    </select><br>
+    Hintergrundfarbe:
+    <select [(ngModel)]="logoBackgroundColor">
+      <option value="#73be1e">Grün</option>
+      <option value="black">Schwarz</option>
+      <option value="white">Weiß</option>
+      <option value="transparent">Transparent</option>
+    </select><br><br>
+
+    <b>Bild</b><br>
+    <input id="file" type="file" (change)="loadImage($event)"><br>
+    Größe:
+    <select [(ngModel)]="mainImageSize" (change)="resetImage()">
+      <option value="FULL_HEIGHT">Volle Höhe</option>
+      <option value="FULL_WIDTH">Voll Breite</option>
+      <option value="INDIVIDUAL">Individuell</option>
+    </select><br>
+    Horizontale Positionierung:
+    <select [(ngModel)]="mainImageHorizontalPositioning" (change)="resetImage()">
+      <option value="LEFT">Links</option>
+      <option value="CENTER">Mitte</option>
+      <option value="RIGHT">Rechts</option>
+      <option value="INDIVIDUAL">Individuell</option>
+    </select><br>
+    Vertikale Positionierung:
+    <select [(ngModel)]="mainImageVerticalPositioning" (change)="resetImage()">
+      <option value="TOP">Oben</option>
+      <option value="CENTER">Mitte</option>
+      <option value="BOTTOM">Unten</option>
+      <option value="INDIVIDUAL">Individuell</option>
+    </select><br><br>
+
+    <button (click)="save()">Speichern</button><br>
+  </div>
 </div>

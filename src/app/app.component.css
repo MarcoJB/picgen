@@ -1,4 +1,4 @@
-:host {
+#page {
   width: 100%;
   height: 100%;
   display: grid;
@@ -9,6 +9,11 @@
     ". preview settings ."
     ". . . .";
   font-family: "helvetica";
+  background-color: #333;
+}
+
+#page.dragging * {
+  cursor: grabbing;
 }
 
 #preview {
@@ -33,6 +38,7 @@
 
 #mainImage {
   position: absolute;
+  cursor: grab;
 }
 
 #titles {
@@ -73,35 +79,45 @@
   white-space: nowrap;
 }
 
+#subtitle.inverted {
+  border-top-color: white;
+  color: #73bd1e;
+}
+
 #subtitle span {
   position: relative;
   top: -80px;
 }
 
 #copyright {
+  color: black;
+  position: absolute;
+  bottom: 20px;
+  left: 50px;
+  font-size: 21px;
+}
+
+#copyright.inverted {
+  color:  white;
+}
+
+#copyright.shadow {
+  text-shadow: 0 0 30px white;
+}
+
+#copyright.inverted.shadow {
   text-shadow: 0 0 30px black;
 }
 
 #logo {
   width: 290px;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
 }
 
 #settings {
   grid-area: settings;
-  color: white;
   margin-left: 20px;
-}
-
-#copyright {
-  position: absolute;
-  bottom: 20px;
-  left: 50px;
-  color: white;
-  font-size: 21px;
-}
-
-#logo {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
+  color: #ccc;
 }
