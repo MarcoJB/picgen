@@ -152,7 +152,9 @@ export class AppComponent {
     const img = this.mainImage.nativeElement
 
     const imagePos = {
+      // @ts-ignore
       x: event.layerX/this.zoomFactor,
+      // @ts-ignore
       y: event.layerY/this.zoomFactor
     }
 
@@ -167,7 +169,9 @@ export class AppComponent {
       y: this.zoomFactor*imagePos.y
     }
 
+    // @ts-ignore
     img.style.left = parseFloat(img.style.left) - (newPosition.x - event.layerX) + "px"
+    // @ts-ignore
     img.style.top = parseFloat(img.style.top) - (newPosition.y - event.layerY) + "px"
 
     // Snapping in zoom direction
