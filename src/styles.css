@@ -1,4 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: "Helvetica Neue LT";
+  src: url("/assets/Helvetica-Neue-LT-65-Medium.woff") format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica Neue LT";
+  src: url("/assets/Helvetica-Neue-LT-55-Roman.woff") format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body {
   margin: 0;
   width: 100%;

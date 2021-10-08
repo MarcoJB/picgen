@@ -1,27 +1,36 @@
-<div id="page" [class.dragging]="dragging" (mousemove)="drag($event)" (mouseup)="deactivateDragging()">
-  <div id="preview">
-    <div id="previewInstagram" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
-      <img id="mainImage" #mainImage (mousedown)="activateDragging($event)" (wheel)="zoom($event)"
-           style="height: {{zoomFactor*mainImage.naturalHeight}}px;">
-      <div id="titles">
-        <div id="title" *ngIf="title">
+<div id="page" [class.dragging]="draggingElement" (mousemove)="drag($event)" (mouseup)="deactivateDragging()">
+  <div id="container" class="{{plattform}}">
+    <div id="preview" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
+      <img src="/assets/{{backgroundImage}}.jpg" *ngIf="backgroundImage">
+      <div id="mainImageContainer" [class.cropped]="cropImage">
+        <img class="mainImage" #mainImage (mousedown)="activateDragging($event, mainImage)"
+             (wheel)="zoom($event)" style="height: {{zoomFactor*mainImage.naturalHeight}}px;">
+      </div>
+      <div class="titles">
+        <div class="title" *ngIf="title">
           <span>
             {{title}}
           </span>
         </div>
-        <div id="subtitle" *ngIf="subtitle" [class.inverted]="subtitleColor=='green'">
+        <div class="subtitle" *ngIf="subtitle" [class.inverted]="subtitleColor=='green'">
           <span>
             {{subtitle}}
           </span>
         </div>
       </div>
-      <div id="copyright" [class.inverted]="copyrightColor=='white'" [class.shadow]="copyrightShadow">
+      <div class="copyright" [class.inverted]="copyrightColor=='white'" [class.shadow]="copyrightShadow">
         {{copyright}}
       </div>
-      <img id="logo" src="/assets/{{logoColor}}.png" style="background-color: {{logoBackgroundColor}};">
+      <img class="logo" src="/assets/{{logoColor}}.png" style="background-color: {{logoBackgroundColor}};">
     </div>
   </div>
   <div id="settings">
+    <b>Plattform</b><br>
+    <select [(ngModel)]="plattform" (change)="changeFormat()">
+      <option value="INSTAGRAM">Instagram</option>
+      <option value="FACEBOOK">Facebook</option>
+    </select><br><br>
+
     <br><b>Überschrift</b><br>
     Text: <input [(ngModel)]="title"><br><br>
 
@@ -51,10 +60,10 @@
     </select><br>
     Hintergrundfarbe:
     <select [(ngModel)]="logoBackgroundColor">
+      <option value="transparent">-</option>
       <option value="#73be1e">Grün</option>
       <option value="black">Schwarz</option>
       <option value="white">Weiß</option>
-      <option value="transparent">Transparent</option>
     </select><br><br>
 
     <b>Bild</b><br>
@@ -78,6 +87,16 @@
       <option value="CENTER">Mitte</option>
       <option value="BOTTOM">Unten</option>
       <option value="INDIVIDUAL">Individuell</option>
+    </select><br>
+    <input type="checkbox" [(ngModel)]="cropImage" (change)="changeFormat()">
+    Bild auf zentralen Bereich zuschneiden<br><br>
+
+    <b>Hintergrundbild</b><br>
+    <select [(ngModel)]="backgroundImage">
+      <option value="">-</option>
+      <option value="meatfreemonday">Meatfree Monday</option>
+      <option value="plasticfree">Plastikfreitag</option>
+      <option value="peace">Frieden</option>
     </select><br><br>
 
     <button (click)="save()">Speichern</button><br>

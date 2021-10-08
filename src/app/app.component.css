@@ -6,50 +6,81 @@
   grid-template-rows: 1fr auto 1fr;
   grid-template-areas:
     ". . . ."
-    ". preview settings ."
+    ". image settings ."
     ". . . .";
-  font-family: "helvetica";
+  align-items: center;
+  font-family: "Helvetica Neue LT";
   background-color: #333;
+  overflow: hidden;
 }
 
 #page.dragging * {
   cursor: grabbing;
 }
 
-#preview {
-  grid-area: preview;
-  width: min(1200px, 90vh);
-  height: min(1200px, 90vh);
+#container {
+  grid-area: image;
+  width: min(min(1200px, 90vh), 60vw);
+  height: min(min(1200px, 90vh), 60vw);
+  margin-right: 20px;
 }
 
-#previewInstagram {
+#container.FACEBOOK {
+  width: min(min(1200px, 180vh), 60vw);
+  height: min(min(600px, 90vh), 30vw);
+}
+
+#preview {
   position: relative;
   width: 1200px;
   height: 1200px;
-  font-weight: bold;
   background-color: white;
   transform-origin: top left;
   overflow: hidden;
 }
 
-#previewInstagram.saving {
+#container.FACEBOOK #preview {
+  height: 600px;
+}
+
+.saving {
   transform: scale(1) !important;
 }
 
-#mainImage {
+#mainImageContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+}
+
+#mainImageContainer.cropped {
+  top: 305px;
+  bottom: 125px;
+}
+
+.mainImage {
   position: absolute;
   cursor: grab;
 }
 
-#titles {
+.titles {
   position: absolute;
-  top: 85px;
+  top: 0;
   left: 45px;
   transform: rotate(-5deg);
   transform-origin: top left;
+  padding-top: 85px;
+  font-weight: bold;
 }
 
-#title {
+#container.FACEBOOK #preview .titles {
+  transform: rotate(-5deg) scale(0.9);
+}
+
+.title {
   border-top: solid 80px #fefe00;
   border-right: solid 15px transparent;
   height: 0;
@@ -57,16 +88,17 @@
   font-size: 65px;
   line-height: 80px;
   padding: 0 15px;
+  white-space: nowrap;
 }
 
-#title span {
+.title span {
   position: relative;
-  top: -80px;
+  top: -76px;
 }
 
-#subtitle {
+.subtitle {
   position: absolute;
-  top: 110px;
+  top: 195px;
   left: 0;
   border-top: solid 80px #73bd1e;
   border-right: solid 15px transparent;
@@ -79,37 +111,36 @@
   white-space: nowrap;
 }
 
-#subtitle.inverted {
+.subtitle.inverted {
   border-top-color: white;
   color: #73bd1e;
 }
 
-#subtitle span {
+.subtitle span {
   position: relative;
-  top: -80px;
+  top: -76px;
 }
 
-#copyright {
+.copyright {
   color: black;
   position: absolute;
-  bottom: 20px;
-  left: 50px;
-  font-size: 21px;
+  bottom: 0;
+  left: 0;
+  font-size: 23px;
+  height: 0;
+  padding: 110px 120px 40px 50px;
+  background-position: right;
 }
 
-#copyright.inverted {
+.copyright.inverted {
   color:  white;
 }
 
-#copyright.shadow {
-  text-shadow: 0 0 30px white;
+.copyright.shadow {
+  background-image: url(/assets/copyright_shadow.png);
 }
 
-#copyright.inverted.shadow {
-  text-shadow: 0 0 30px black;
-}
-
-#logo {
+.logo {
   width: 290px;
   position: absolute;
   bottom: 15px;
@@ -118,6 +149,6 @@
 
 #settings {
   grid-area: settings;
-  margin-left: 20px;
   color: #ccc;
+  overflow: auto;
 }

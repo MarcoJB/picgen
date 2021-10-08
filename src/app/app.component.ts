@@ -23,9 +23,13 @@ export class AppComponent {
   zoomFactor = 1
   mainImageHorizontalPositioning = "CENTER"
   mainImageVerticalPositioning = "CENTER"
-  dragging = false
+  draggingElement: HTMLImageElement|null = null
   dragStartPosition = {x: 0, y: 0}
   imageStartPosition = {x: 0, y: 0}
+  plattform = "INSTAGRAM"
+  imageHeight = 1200
+  backgroundImage = ""
+  cropImage = false
 
   ngOnInit() {
     this.calcScaleFactor();
@@ -36,8 +40,22 @@ export class AppComponent {
     this.calcScaleFactor()
   }
 
+  changeFormat() {
+    if (this.plattform == "INSTAGRAM") {
+      this.imageHeight = this.cropImage ? 770 : 1200
+    } else {
+      this.imageHeight = this.cropImage ? 170 : 600
+    }
+
+    setTimeout(() => {
+      this.calcScaleFactor()
+      this.resetImage()
+    })
+  }
+
   calcScaleFactor() {
-    this.scaleFactor = Math.min(1200, window.innerHeight*0.9) / 1200;
+    // @ts-ignore
+    this.scaleFactor = document.querySelector("#container").offsetWidth / 1200
   }
 
   save() {
@@ -51,7 +69,7 @@ export class AppComponent {
 
   createImage() {
     // @ts-ignore
-    html2canvas(document.querySelector("#previewInstagram")).then(canvas => {
+    html2canvas(document.querySelector("#preview")).then(canvas => {
       const link = document.createElement("a")
       link.setAttribute('download', 'picgen.png')
       link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png",
@@ -86,7 +104,7 @@ export class AppComponent {
 
   resetImageSize(img: HTMLImageElement) {
     if (this.mainImageSize == "FULL_HEIGHT") {
-      this.zoomFactor = 1200 / img.naturalHeight
+      this.zoomFactor = this.imageHeight / img.naturalHeight
     } else if (this.mainImageSize == "FULL_WIDTH") {
       this.zoomFactor = 1200 / img.naturalWidth
     }
@@ -112,27 +130,28 @@ export class AppComponent {
         img.style.top = "0"
         break
       case "CENTER":
-        img.style.top = (1200-this.zoomFactor*img.naturalHeight)/2 + "px"
+        img.style.top = (this.imageHeight-this.zoomFactor*img.naturalHeight)/2 + "px"
         break
       case "BOTTOM":
-        img.style.top = (1200-this.zoomFactor*img.naturalHeight) + "px"
+        img.style.top = (this.imageHeight-this.zoomFactor*img.naturalHeight) + "px"
         break
     }
   }
 
-  activateDragging(event: MouseEvent) {
-    this.dragging = true
+  activateDragging(event: MouseEvent, imageElement: HTMLImageElement) {
+    this.draggingElement = imageElement
     this.dragStartPosition.x = event.clientX
     this.dragStartPosition.y = event.clientY
-    this.imageStartPosition.x = parseFloat(this.mainImage.nativeElement.style.left)
-    this.imageStartPosition.y = parseFloat(this.mainImage.nativeElement.style.top)
+    console.log(this.draggingElement.style.left)
+    this.imageStartPosition.x = parseFloat(this.draggingElement.style.left)
+    this.imageStartPosition.y = parseFloat(this.draggingElement.style.top)
 
     event.preventDefault()
   }
 
   drag(event: MouseEvent) {
-    if (this.dragging) {
-      const img = this.mainImage.nativeElement
+    if (this.draggingElement !== null) {
+      const img = this.draggingElement
 
       img.style.left = this.imageStartPosition.x + (event.clientX - this.dragStartPosition.x) / this.scaleFactor + "px"
       img.style.top = this.imageStartPosition.y + (event.clientY - this.dragStartPosition.y) / this.scaleFactor + "px"
@@ -145,7 +164,7 @@ export class AppComponent {
   }
 
   deactivateDragging() {
-    this.dragging = false
+    this.draggingElement = null
   }
 
   zoom(event: WheelEvent) {
@@ -175,9 +194,9 @@ export class AppComponent {
     img.style.top = parseFloat(img.style.top) - (newPosition.y - event.layerY) + "px"
 
     // Snapping in zoom direction
-    if (Math.abs(1200 - this.zoomFactor*img.naturalHeight) < 1) {
+    if (Math.abs(this.imageHeight - this.zoomFactor*img.naturalHeight) < 1) {
       this.mainImageSize = "FULL_HEIGHT"
-      this.zoomFactor = 1200/img.naturalHeight
+      this.zoomFactor = this.imageHeight/img.naturalHeight
     } else if (Math.abs(1200 - this.zoomFactor*img.naturalWidth) < 1) {
       this.mainImageSize = "FULL_WIDTH"
       this.zoomFactor = 1200/img.naturalWidth
@@ -189,7 +208,7 @@ export class AppComponent {
     this.snapVertical(1)
   }
 
-  snapHorizontal(tolerance: number = 10) {
+  snapHorizontal(tolerance: number = 20) {
     const img = this.mainImage.nativeElement
 
     // Snapping in horizontal direction
@@ -207,18 +226,18 @@ export class AppComponent {
     }
   }
 
-  snapVertical(tolerance: number = 10) {
+  snapVertical(tolerance: number = 20) {
     const img = this.mainImage.nativeElement
 
     // Snapping in vertical direction
     if (Math.abs(parseFloat(img.style.top)) < tolerance) {
       img.style.top = "0"
       this.mainImageVerticalPositioning = "TOP"
-    } else if (Math.abs(parseFloat(img.style.top) - (1200 - this.zoomFactor * img.naturalHeight) / 2) < tolerance) {
-      img.style.top = (1200 - this.zoomFactor * img.naturalHeight) / 2 + "px"
+    } else if (Math.abs(parseFloat(img.style.top) - (this.imageHeight - this.zoomFactor * img.naturalHeight) / 2) < tolerance) {
+      img.style.top = (this.imageHeight - this.zoomFactor * img.naturalHeight) / 2 + "px"
       this.mainImageVerticalPositioning = "CENTER"
-    } else if (Math.abs(parseFloat(img.style.top) - (1200 - this.zoomFactor * img.naturalHeight)) < tolerance) {
-      img.style.top = (1200 - this.zoomFactor * img.naturalHeight) + "px"
+    } else if (Math.abs(parseFloat(img.style.top) - (this.imageHeight - this.zoomFactor * img.naturalHeight)) < tolerance) {
+      img.style.top = (this.imageHeight - this.zoomFactor * img.naturalHeight) + "px"
       this.mainImageVerticalPositioning = "BOTTOM"
     } else {
       this.mainImageVerticalPositioning = "INDIVIDUAL"
