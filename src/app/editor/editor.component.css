@@ -1,13 +1,6 @@
 :host {
   width: 100%;
   height: 100%;
-  /*display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto 1fr;
-  grid-template-areas:
-    "toolbar toolbar"
-    "settings image";
-  align-items: center;*/
   display: flex;
   flex-direction: column;
   overflow: hidden;
