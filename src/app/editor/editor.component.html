@@ -1,136 +1,139 @@
 <mat-toolbar color="primary">
+  <button mat-icon-button (click)="sidenav.toggle()" *ngIf="smallScreen">
+    <mat-icon>menu</mat-icon>
+  </button>
   <span>Sharepic Generator</span>
 </mat-toolbar>
 
-<mat-drawer-container>
-  <mat-drawer mode="side" opened>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav [mode]="smallScreen?'over':'side'" opened="{{!smallScreen}}">
+    <div id="sidenavInner">
+      <mat-button-toggle-group [(ngModel)]="platform" (change)="changeFormat()" id="platformConfig" class="configElement">
+        <mat-button-toggle value="INSTAGRAM">Instagram</mat-button-toggle>
+        <mat-button-toggle value="FACEBOOK">Facebook</mat-button-toggle>
+      </mat-button-toggle-group>
 
-    <mat-button-toggle-group [(ngModel)]="platform" (change)="changeFormat()" id="platformConfig" class="configElement">
-      <mat-button-toggle value="INSTAGRAM">Instagram</mat-button-toggle>
-      <mat-button-toggle value="FACEBOOK">Facebook</mat-button-toggle>
-    </mat-button-toggle-group>
-
-    <mat-form-field class="configElement">
-      <mat-label>Überschrift</mat-label>
-      <input matInput  [(ngModel)]="title" placeholder="Überschrift">
-    </mat-form-field>
-
-    <div id="subtitleConfig" class="configElement">
-      <mat-form-field>
-        <mat-label>Unterüberschrift</mat-label>
-        <input matInput  [(ngModel)]="subtitle" placeholder="Unterüberschrift">
+      <mat-form-field class="configElement">
+        <mat-label>Überschrift</mat-label>
+        <input matInput  [(ngModel)]="title" placeholder="Überschrift">
       </mat-form-field>
 
-      <mat-button-toggle-group [(ngModel)]="subtitleColor" id="subtitleScheme">
-        <mat-button-toggle value="white"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="green"><span>Aa</span></mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-
-    <div id="copyrightConfig" class="configElement">
-      <mat-form-field>
-        <mat-label>Copyright</mat-label>
-        <input matInput  [(ngModel)]="copyright" placeholder="Copyright">
-      </mat-form-field>
-
-      <mat-slide-toggle [(ngModel)]="copyrightShadow">Schatten</mat-slide-toggle>
-
-      <mat-button-toggle-group [(ngModel)]="copyrightColor" id="copyrightColor">
-        <mat-button-toggle value="white"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="black"><span>Aa</span></mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-
-    <mat-form-field id="logoConfig" class="configElement">
-      <mat-label>Logo</mat-label>
-      <input matInput value="Logo" hidden>
-      <mat-button-toggle-group [(ngModel)]="logoScheme" id="logoScheme">
-        <mat-button-toggle value="gt"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="gg" disabled><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="gb"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="gw"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="bt"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="bg"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="bb" disabled><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="bw"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="wt"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="wg"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="wb"><span>Aa</span></mat-button-toggle>
-        <mat-button-toggle value="ww" disabled><span>Aa</span></mat-button-toggle>
-      </mat-button-toggle-group>
-    </mat-form-field>
-
-    <div class="configElement">
-      <div id="mainImageFileConfig">
+      <div id="subtitleConfig" class="configElement">
         <mat-form-field>
-          <mat-label>Bild</mat-label>
-          <input matInput [value]="mainImageFileName" placeholder="Bild" disabled>
+          <mat-label>Unterüberschrift</mat-label>
+          <input matInput  [(ngModel)]="subtitle" placeholder="Unterüberschrift">
         </mat-form-field>
 
-        <button mat-flat-button (click)="fileUpload.click()" color="primary">Bild auswählen</button>
-        <input id="file" type="file" (change)="fileSelected($event)" #fileUpload>
-      </div>
-
-      <div id="mainImageConfig">
-        <mat-button-toggle-group [(ngModel)]="mainImageSize" (change)="resetImage()" id="mainImageSizeConfig">
-          <mat-button-toggle value="FULL_HEIGHT">
-            <mat-icon>expand</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle value="FULL_WIDTH">
-            <mat-icon>expand</mat-icon>
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-
-        <mat-button-toggle-group [(ngModel)]="mainImageVerticalPositioning" (change)="resetImage()"
-                                 id="mainImageVerticalConfig">
-          <mat-button-toggle value="TOP">
-            <mat-icon>vertical_align_top</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle value="CENTER">
-            <mat-icon>vertical_align_center</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle value="BOTTOM">
-            <mat-icon>vertical_align_bottom</mat-icon>
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-
-        <mat-button-toggle-group [(ngModel)]="mainImageHorizontalPositioning" (change)="resetImage()"
-                                 id="mainImageHorizontalConfig">
-          <mat-button-toggle value="LEFT">
-            <mat-icon>vertical_align_top</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle value="CENTER">
-            <mat-icon>vertical_align_center</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle value="RIGHT">
-            <mat-icon>vertical_align_bottom</mat-icon>
-          </mat-button-toggle>
-        </mat-button-toggle-group>
-
-        <mat-button-toggle-group [(ngModel)]="cropImage" (change)="changeFormat()" id="mainImageCropConfig">
-          <mat-button-toggle [value]="false">
-            <mat-icon>settings_overscan</mat-icon>
-          </mat-button-toggle>
-          <mat-button-toggle [value]="true">
-            <mat-icon>photo_size_select_small</mat-icon>
-          </mat-button-toggle>
+        <mat-button-toggle-group [(ngModel)]="subtitleColor" id="subtitleScheme">
+          <mat-button-toggle value="white"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="green"><span>Aa</span></mat-button-toggle>
         </mat-button-toggle-group>
       </div>
+
+      <div id="copyrightConfig" class="configElement">
+        <mat-form-field>
+          <mat-label>Copyright</mat-label>
+          <input matInput  [(ngModel)]="copyright" placeholder="Copyright">
+        </mat-form-field>
+
+        <mat-button-toggle-group [(ngModel)]="copyrightColor" id="copyrightColor">
+          <mat-button-toggle value="black"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="white"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="white_with_shadow"><span>Aa</span></mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      <mat-form-field id="logoConfig" class="configElement">
+        <mat-label>Logo</mat-label>
+        <input matInput value="Logo" hidden>
+        <mat-button-toggle-group [(ngModel)]="logoScheme" id="logoScheme">
+          <mat-button-toggle value="gt"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="gg" disabled><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="gb"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="gw"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="bt"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="bg"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="bb" disabled><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="bw"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="wt"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="wg"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="wb"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="ww" disabled><span>Aa</span></mat-button-toggle>
+        </mat-button-toggle-group>
+      </mat-form-field>
+
+      <div class="configElement">
+        <div id="mainImageFileConfig">
+          <mat-form-field>
+            <mat-label>Bild</mat-label>
+            <input matInput [value]="mainImageFileName" placeholder="Bild" disabled>
+          </mat-form-field>
+
+          <button mat-flat-button (click)="fileUpload.click()" color="primary">Bild auswählen</button>
+          <input id="file" type="file" (change)="fileSelected($event)" #fileUpload>
+        </div>
+
+        <div id="mainImageConfig">
+          <mat-button-toggle-group [(ngModel)]="mainImageSize" (change)="resetImage()" id="mainImageSizeConfig">
+            <mat-button-toggle value="FULL_HEIGHT">
+              <mat-icon>expand</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="FULL_WIDTH">
+              <mat-icon>expand</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <mat-button-toggle-group [(ngModel)]="mainImageVerticalPositioning" (change)="resetImage()"
+                                   id="mainImageVerticalConfig">
+            <mat-button-toggle value="TOP">
+              <mat-icon>vertical_align_top</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="CENTER">
+              <mat-icon>vertical_align_center</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="BOTTOM">
+              <mat-icon>vertical_align_bottom</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <mat-button-toggle-group [(ngModel)]="mainImageHorizontalPositioning" (change)="resetImage()"
+                                   id="mainImageHorizontalConfig">
+            <mat-button-toggle value="LEFT">
+              <mat-icon>vertical_align_top</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="CENTER">
+              <mat-icon>vertical_align_center</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="RIGHT">
+              <mat-icon>vertical_align_bottom</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <mat-button-toggle-group [(ngModel)]="cropImage" (change)="changeFormat()" id="mainImageCropConfig">
+            <mat-button-toggle [value]="false">
+              <mat-icon>settings_overscan</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle [value]="true">
+              <mat-icon>photo_size_select_small</mat-icon>
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+
+      <mat-form-field class="configElement">
+        <mat-label>Hintergrundbild</mat-label>
+        <mat-select [(ngModel)]="backgroundImage">
+          <mat-option value="">-</mat-option>
+          <mat-option value="meatfreemonday">Meatfree Monday</mat-option>
+          <mat-option value="plasticfree">Plastikfreitag</mat-option>
+          <mat-option value="peace">Frieden</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" (click)="save()" color="accent" id="export">Speichern</button>
     </div>
-
-    <mat-form-field class="configElement">
-      <mat-label>Hintergrundbild</mat-label>
-      <mat-select [(ngModel)]="backgroundImage">
-        <mat-option value="">-</mat-option>
-        <mat-option value="meatfreemonday">Meatfree Monday</mat-option>
-        <mat-option value="plasticfree">Plastikfreitag</mat-option>
-        <mat-option value="peace">Frieden</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <button mat-flat-button color="primary" (click)="save()" color="accent" id="export">Speichern</button>
-  </mat-drawer>
-  <mat-drawer-content>
+  </mat-sidenav>
+  <mat-sidenav-content>
     <div id="container" class="mat-elevation-z2 {{platform}}">
       <div id="preview" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
         <img src="/assets/{{backgroundImage}}.jpg" *ngIf="backgroundImage">
@@ -150,14 +153,15 @@
         </span>
           </div>
         </div>
-        <div class="copyright" [class.inverted]="copyrightColor=='white'" [class.shadow]="copyrightShadow">
+        <div class="copyright" [class.inverted]="copyrightColor[0]=='w'"
+             [class.shadow]="copyrightColor=='white_with_shadow'">
           {{copyright}}
         </div>
         <img class="logo {{logoScheme[1]}}" src="/assets/logo_gpka_{{logoScheme[0]}}.png">
       </div>
     </div>
-  </mat-drawer-content>
-</mat-drawer-container>
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
 <div id="exportOverlay" *ngIf="exporting">
   <mat-spinner></mat-spinner>

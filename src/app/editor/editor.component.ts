@@ -11,11 +11,8 @@ export class EditorComponent implements OnInit {
   subtitle = 'Unterüberschrift'
   subtitleColor = "white"
   copyright = '© Greenpeace Karlsruhe'
-  copyrightColor = "white"
-  copyrightShadow = true
-  logoColor = "logo_gpka_w"
+  copyrightColor = "black"
   logoScheme = "wg"
-  logoBackgroundColor = "#73be1e"
   saving = false
   scaleFactor = 1
   fileDragging = false
@@ -33,6 +30,7 @@ export class EditorComponent implements OnInit {
   backgroundImage = ""
   cropImage = false
   exporting = false
+  smallScreen = window.innerWidth < 800
 
   @HostBinding('class.dragging') draggingElement: HTMLImageElement|null = null
 
@@ -45,6 +43,7 @@ export class EditorComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize(even:any) {
     this.calcScaleFactor()
+    this.smallScreen = window.innerWidth < 800
   }
 
   changeFormat() {
