@@ -48,11 +48,25 @@ mat-sidenav mat-form-field {
 #subtitleConfig, #copyrightConfig {
   display: flex;
   align-items: center;
+  grid-column-gap: 10px;
+  flex-wrap: wrap;
+}
+
+#subtitleConfig mat-form-field, #copyrightConfig mat-form-field {
+  width: auto;
+  flex-grow: 100;
+}
+
+#subtitleConfig mat-button-toggle-group, #copyrightConfig mat-button-toggle-group {
+  flex-grow: 1;
+}
+
+#subtitleConfig mat-button-toggle-group mat-button-toggle, #copyrightConfig mat-button-toggle-group mat-button-toggle {
+  flex-grow: 1;
 }
 
 #subtitleScheme, #copyrightColor {
   flex-shrink: 0;
-  margin-left: 10px;
 }
 
 #subtitleScheme mat-button-toggle[value="white"] span {
@@ -69,7 +83,6 @@ mat-sidenav mat-form-field {
 }
 
 #copyrightConfig mat-form-field {
-  margin-right: 10px;
 }
 
 #copyrightConfig mat-slide-toggle {
@@ -82,7 +95,7 @@ mat-sidenav mat-form-field {
 
 #copyrightColor mat-button-toggle span {
   background-image: url(/assets/transparent.png);
-  outline: solid 1px #ccc;
+  outline: solid 1px #c7c7c7;
 }
 
 #copyrightColor mat-button-toggle[value="white"] span {
@@ -106,86 +119,61 @@ mat-sidenav mat-form-field {
 
 #logoScheme {
   display: grid;
-  grid-template-columns: auto auto auto auto;
+  grid-template-columns: auto auto auto;
+  grid-gap: 1px;
+  background-color: rgba(0, 0, 0, 0.12);
+  border-color: transparent;
 }
 
-#logoScheme mat-button-toggle:nth-child(4n+1) {
+#logoScheme mat-button-toggle  {
   border: none;
-}
-
-#logoScheme mat-button-toggle:nth-child(n+5) {
-  border-top: solid 1px rgba(0, 0, 0, 0.12);
 }
 
 #logoScheme mat-button-toggle span {
   padding: 5px;
-}
-
-#logoScheme mat-button-toggle:nth-child(-n+4) span {
   color: #73bd1e;
 }
 
-#logoScheme mat-button-toggle:nth-child(n+9) span {
-  color: white;
-}
-
-#logoScheme mat-button-toggle:nth-child(4n+1) span {
-  outline: solid 1px #ccc;
-  background-image: url(/assets/transparent.png);
-}
-
-#logoScheme mat-button-toggle:nth-child(4n+2) span {
-  background-color: #73be1e;
-}
-
-#logoScheme mat-button-toggle:nth-child(4n+3) span {
-  background-color: black;
-}
-
-#logoScheme mat-button-toggle:nth-child(4n+4) span {
-  background-color: white;
-  outline: solid 1px #ccc;
-}
-
-#logoScheme mat-button-toggle[value="gg"] span,
-#logoScheme mat-button-toggle[value="bb"] span,
-#logoScheme mat-button-toggle[value="ww"] span {
-  color: transparent;
-  text-shadow: none;
-  outline: solid 1px #ccc;
-  background-image: linear-gradient(to bottom right, transparent 47%, #ccc 47%, #ccc 53%, transparent 53%),
-                    linear-gradient(to bottom left, transparent 47%, #ccc 47%, #ccc 53%, transparent 53%);
-  background-color: #f8f8f8;
-}
-
-#logoScheme mat-button-toggle[value="wt"] span {
-  text-shadow: 1px 1px 2px black;
-}
-
-#logoColor mat-button-toggle[value="logo_gpka_g"] span {
-  padding: 5px;
-  color: #73bd1e;
-}
-
-#logoColor mat-button-toggle[value="logo_gpka_b"] span {
-  padding: 5px;
+#logoScheme mat-button-toggle:nth-child(n+4) span {
   color: black;
 }
 
-#logoColor mat-button-toggle[value="logo_gpka_w"] span {
-  padding: 5px;
-  background-color: #888;
+#logoScheme mat-button-toggle:nth-child(3n+1) span {
   color: white;
 }
 
+#logoScheme mat-button-toggle:nth-child(1) span {
+  background-color: #73bd1e;
+}
+
+#logoScheme mat-button-toggle:nth-child(4) span {
+  background-color: black;
+}
+
+#logoScheme mat-button-toggle:nth-child(3n+2) span {
+  background-color: white;
+  outline: solid 1px #c7c7c7;
+}
+
+#logoScheme mat-button-toggle:nth-child(3n+3) span {
+  background-image: url(/assets/transparent.png);
+  outline: solid 1px #c7c7c7;
+}
+
 #mainImageFileConfig {
-  display: grid;
-  grid-template-columns: 1fr auto;
+  display: flex;
   align-items: center;
+  grid-column-gap: 10px;
+  flex-wrap: wrap;
+}
+
+#mainImageFileConfig mat-form-field {
+  width: auto;
+  flex-grow: 100;
 }
 
 #mainImageFileConfig button {
-  margin-left: 10px;
+  flex-grow: 1;
 }
 
 #mainImageFileConfig #file {
@@ -194,18 +182,28 @@ mat-sidenav mat-form-field {
 
 #mainImageConfig {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto 1fr auto;
   grid-template-areas:
     "size horizontal crop"
     "size vertical crop";
   margin-bottom: 40px;
+  grid-gap: 10px;
+}
+
+@media (max-width: 310px) {
+  #mainImageConfig {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "size crop"
+      "horizontal horizontal"
+      "vertical vertical";
+  }
 }
 
 #mainImageSizeConfig {
   grid-area: size;
   display: inline-grid;
   grid-template-rows: repeat(2, 1fr);
-  margin-right: 10px;
 }
 
 ::ng-deep #mainImageSizeConfig mat-button-toggle button {
@@ -218,12 +216,11 @@ mat-sidenav mat-form-field {
 }
 
 #mainImageSizeConfig mat-button-toggle[value="FULL_WIDTH"] mat-icon {
-  rotate: 90deg;
+  transform: rotate(90deg);
 }
 
 #mainImageHorizontalConfig {
   grid-area: horizontal;
-  margin-bottom: 10px;
 }
 
 #mainImageVerticalConfig {
@@ -238,14 +235,13 @@ mat-sidenav mat-form-field {
 }
 
 #mainImageHorizontalConfig mat-icon {
-  rotate: -90deg;
+  transform: rotate(-90deg);
 }
 
 #mainImageCropConfig {
   grid-area: crop;
   display: inline-grid;
   grid-template-rows: repeat(2, 1fr);
-  margin-left: 10px;
 }
 
 ::ng-deep #mainImageCropConfig mat-button-toggle button {

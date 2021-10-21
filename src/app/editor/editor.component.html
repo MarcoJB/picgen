@@ -6,7 +6,7 @@
 </mat-toolbar>
 
 <mat-sidenav-container>
-  <mat-sidenav #sidenav [mode]="smallScreen?'over':'side'" opened="{{!smallScreen}}">
+  <mat-sidenav #sidenav [mode]="smallScreen?'over':'side'" opened="{{!smallScreen}}" [autoFocus]="false">
     <div id="sidenavInner">
       <mat-button-toggle-group [(ngModel)]="platform" (change)="changeFormat()" id="platformConfig" class="configElement">
         <mat-button-toggle value="INSTAGRAM">Instagram</mat-button-toggle>
@@ -47,23 +47,17 @@
         <mat-label>Logo</mat-label>
         <input matInput value="Logo" hidden>
         <mat-button-toggle-group [(ngModel)]="logoScheme" id="logoScheme">
-          <mat-button-toggle value="gt"><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="gg" disabled><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="gb"><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="gw"><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="bt"><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="bg"><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="bb" disabled><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="bw"><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="wt"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="wg"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="gw"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="gt"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="wb"><span>Aa</span></mat-button-toggle>
-          <mat-button-toggle value="ww" disabled><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="bw"><span>Aa</span></mat-button-toggle>
+          <mat-button-toggle value="bt"><span>Aa</span></mat-button-toggle>
         </mat-button-toggle-group>
       </mat-form-field>
 
-      <div class="configElement">
-        <div id="mainImageFileConfig">
+      <div>
+        <div id="mainImageFileConfig" class="configElement">
           <mat-form-field>
             <mat-label>Bild</mat-label>
             <input matInput [value]="mainImageFileName" placeholder="Bild" disabled>
@@ -73,7 +67,7 @@
           <input id="file" type="file" (change)="fileSelected($event)" #fileUpload>
         </div>
 
-        <div id="mainImageConfig">
+        <div id="mainImageConfig" class="configElement">
           <mat-button-toggle-group [(ngModel)]="mainImageSize" (change)="resetImage()" id="mainImageSizeConfig">
             <mat-button-toggle value="FULL_HEIGHT">
               <mat-icon>expand</mat-icon>
@@ -130,7 +124,7 @@
         </mat-select>
       </mat-form-field>
 
-      <button mat-flat-button color="primary" (click)="save()" color="accent" id="export">Speichern</button>
+      <button mat-flat-button color="primary" (click)="save()" color="accent" id="export">Bild exportieren</button>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
