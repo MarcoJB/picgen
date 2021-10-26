@@ -21,6 +21,7 @@ mat-sidenav-container {
 }
 
 mat-sidenav {
+  width: 400px;
   max-width: 100vw;
 }
 
@@ -322,6 +323,37 @@ mat-sidenav-content {
   cursor: grab;
 }
 
+#text {
+  position: absolute;
+  top: 340px;
+  left: 24px;
+  right: 24px;
+  margin: 0;
+}
+
+#text mat-list-item {
+  font-size: 40px;
+  color: white;
+  font-weight: 45;
+}
+
+#text.noBackground mat-list-item {
+  color: black;
+}
+
+#text.noTitle {
+  top: 230px;
+}
+
+#text mat-icon {
+  transform: scale(0.85);
+  margin-right: 10px;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
 .titles {
   position: absolute;
   top: 0;
@@ -370,6 +402,10 @@ mat-sidenav-content {
 .subtitle.inverted {
   border-top-color: white;
   color: #73bd1e;
+}
+
+.subtitle.firstTitle {
+  top: auto;
 }
 
 .subtitle span {

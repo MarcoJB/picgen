@@ -124,6 +124,12 @@
         </mat-select>
       </mat-form-field>
 
+      <mat-form-field class="configElement" appearance="fill">
+        <mat-label>Text</mat-label>
+        <textarea [(ngModel)]="text" matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
+                  cdkAutosizeMaxRows="10"></textarea>
+      </mat-form-field>
+
       <button mat-flat-button color="primary" (click)="save()" color="accent" id="export">Bild exportieren</button>
     </div>
   </mat-sidenav>
@@ -135,13 +141,21 @@
           <img class="mainImage" #mainImage (mousedown)="activateDragging($event, mainImage)"
                (wheel)="zoom($event)" style="height: {{zoomFactor*mainImage.naturalHeight}}px;">
         </div>
+        <mat-list id="text" [class.noBackground]="!backgroundImage" [class.noTitle]="!title">
+          <ng-container *ngFor="let row of text2html(text)">
+            <mat-list-item [class.hidden]="!row.text">
+              <mat-icon mat-list-icon *ngIf="row.icon">fiber_manual_record</mat-icon>
+              {{row.text}}
+            </mat-list-item>
+          </ng-container>
+        </mat-list>
         <div class="titles">
           <div class="title" *ngIf="title">
         <span>
           {{title}}
         </span>
           </div>
-          <div class="subtitle" *ngIf="subtitle" [class.inverted]="subtitleColor=='green'">
+          <div class="subtitle" *ngIf="subtitle" [class.inverted]="subtitleColor=='green'" [class.firstTitle]="!title">
         <span>
           {{subtitle}}
         </span>

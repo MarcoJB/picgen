@@ -1,5 +1,6 @@
 import {Component, ElementRef, HostBinding, HostListener, OnInit, ViewChild} from '@angular/core';
 import html2canvas from "html2canvas";
+import {ListItem} from "../../datatypes/ListItem";
 
 @Component({
   selector: 'app-editor',
@@ -31,6 +32,7 @@ export class EditorComponent implements OnInit {
   cropImage = false
   exporting = false
   smallScreen = window.innerWidth < 800
+  text = ""
 
   @HostBinding('class.dragging') draggingElement: HTMLImageElement|null = null
 
@@ -286,5 +288,19 @@ export class EditorComponent implements OnInit {
     } else {
       this.mainImageVerticalPositioning = "INDIVIDUAL"
     }
+  }
+
+  text2html(text: string): ListItem[] {
+    const items: ListItem[] = []
+
+    text.split("\n").forEach(row => {
+      if (row[0] == "-") {
+        items.push(new ListItem(row.substr(1), true))
+      } else {
+        items.push(new ListItem(row, false))
+      }
+    })
+
+    return items
   }
 }

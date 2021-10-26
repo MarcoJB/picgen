@@ -2100,14 +2100,28 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 @font-face {
   font-family: "Helvetica Neue LT";
   src: url("/assets/Helvetica-Neue-LT-65-Medium.woff") format('woff');
-  font-weight: bold;
+  font-weight: 65;
   font-style: normal;
 }
 
 @font-face {
   font-family: "Helvetica Neue LT";
   src: url("/assets/Helvetica-Neue-LT-55-Roman.woff") format('woff');
-  font-weight: normal;
+  font-weight: 55;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica Neue LT";
+  src: url("/assets/Helvetica-Neue-LT-45-Light.woff") format('woff');
+  font-weight: 45;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Helvetica Neue LT";
+  src: url("/assets/Helvetica-Neue-LT-35-Thin.woff") format('woff');
+  font-weight: 35;
   font-style: normal;
 }
 

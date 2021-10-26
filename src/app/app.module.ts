@@ -15,8 +15,8 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
-import {MatProgressBarModule} from "@angular/material/progress-bar";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatListModule} from "@angular/material/list";
 
 @NgModule({
   declarations: [
@@ -37,7 +37,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
       MatSlideToggleModule,
       MatIconModule,
       MatButtonModule,
-      MatProgressSpinnerModule
+      MatProgressSpinnerModule,
+      MatListModule
     ],
   providers: [],
   bootstrap: [AppComponent]
