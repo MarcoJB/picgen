@@ -8,23 +8,23 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav [mode]="smallScreen?'over':'side'" opened="{{!smallScreen}}" [autoFocus]="false">
     <div id="sidenavInner">
-      <mat-button-toggle-group [(ngModel)]="platform" (change)="changeFormat()" id="platformConfig" class="configElement">
+      <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].platform" id="platformConfig" class="configElement">
         <mat-button-toggle value="INSTAGRAM">Instagram</mat-button-toggle>
         <mat-button-toggle value="FACEBOOK">Facebook</mat-button-toggle>
       </mat-button-toggle-group>
 
       <mat-form-field class="configElement">
         <mat-label>Überschrift</mat-label>
-        <input matInput  [(ngModel)]="title" placeholder="Überschrift">
+        <input matInput [(ngModel)]="sharePics[activeSharePic].title" placeholder="Überschrift">
       </mat-form-field>
 
       <div id="subtitleConfig" class="configElement">
         <mat-form-field>
           <mat-label>Unterüberschrift</mat-label>
-          <input matInput  [(ngModel)]="subtitle" placeholder="Unterüberschrift">
+          <input matInput [(ngModel)]="sharePics[activeSharePic].subtitle" placeholder="Unterüberschrift">
         </mat-form-field>
 
-        <mat-button-toggle-group [(ngModel)]="subtitleColor" id="subtitleScheme">
+        <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].subtitleColor" id="subtitleScheme">
           <mat-button-toggle value="white"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="green"><span>Aa</span></mat-button-toggle>
         </mat-button-toggle-group>
@@ -33,10 +33,10 @@
       <div id="copyrightConfig" class="configElement">
         <mat-form-field>
           <mat-label>Copyright</mat-label>
-          <input matInput  [(ngModel)]="copyright" placeholder="Copyright">
+          <input matInput [(ngModel)]="sharePics[activeSharePic].copyright" placeholder="Copyright">
         </mat-form-field>
 
-        <mat-button-toggle-group [(ngModel)]="copyrightColor" id="copyrightColor">
+        <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].copyrightColor" id="copyrightColor">
           <mat-button-toggle value="black"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="white"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="white_with_shadow"><span>Aa</span></mat-button-toggle>
@@ -46,7 +46,7 @@
       <mat-form-field id="logoConfig" class="configElement">
         <mat-label>Logo</mat-label>
         <input matInput value="Logo" hidden>
-        <mat-button-toggle-group [(ngModel)]="logoScheme" id="logoScheme">
+        <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].logoScheme" id="logoScheme">
           <mat-button-toggle value="wg"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="gw"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="gt"><span>Aa</span></mat-button-toggle>
@@ -60,7 +60,7 @@
         <div id="mainImageFileConfig" class="configElement">
           <mat-form-field>
             <mat-label>Bild</mat-label>
-            <input matInput [value]="mainImageFileName" placeholder="Bild" disabled>
+            <input matInput placeholder="Bild" disabled>
           </mat-form-field>
 
           <button mat-flat-button (click)="fileUpload.click()" color="primary">Bild auswählen</button>
@@ -68,7 +68,7 @@
         </div>
 
         <div id="mainImageConfig" class="configElement">
-          <mat-button-toggle-group [(ngModel)]="mainImageSize" (change)="resetImage()" id="mainImageSizeConfig">
+          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageSize" id="mainImageSizeConfig">
             <mat-button-toggle value="FULL_HEIGHT">
               <mat-icon>expand</mat-icon>
             </mat-button-toggle>
@@ -77,7 +77,7 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-          <mat-button-toggle-group [(ngModel)]="mainImageVerticalPositioning" (change)="resetImage()"
+          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageVerticalPositioning"
                                    id="mainImageVerticalConfig">
             <mat-button-toggle value="TOP">
               <mat-icon>vertical_align_top</mat-icon>
@@ -90,7 +90,7 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-          <mat-button-toggle-group [(ngModel)]="mainImageHorizontalPositioning" (change)="resetImage()"
+          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageHorizontalPositioning"
                                    id="mainImageHorizontalConfig">
             <mat-button-toggle value="LEFT">
               <mat-icon>vertical_align_top</mat-icon>
@@ -103,7 +103,7 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-          <mat-button-toggle-group [(ngModel)]="cropImage" (change)="changeFormat()" id="mainImageCropConfig">
+          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].cropImage" id="mainImageCropConfig">
             <mat-button-toggle [value]="false">
               <mat-icon>settings_overscan</mat-icon>
             </mat-button-toggle>
@@ -116,7 +116,7 @@
 
       <mat-form-field class="configElement">
         <mat-label>Hintergrundbild</mat-label>
-        <mat-select [(ngModel)]="backgroundImage">
+        <mat-select [(ngModel)]="sharePics[activeSharePic].backgroundImage">
           <mat-option value="">-</mat-option>
           <mat-option value="meatfreemonday">Meatfree Monday</mat-option>
           <mat-option value="plasticfree">Plastikfreitag</mat-option>
@@ -126,48 +126,33 @@
 
       <mat-form-field class="configElement" appearance="fill">
         <mat-label>Text</mat-label>
-        <textarea [(ngModel)]="text" matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
+        <textarea [(ngModel)]="sharePics[activeSharePic].text" matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
                   cdkAutosizeMaxRows="10"></textarea>
       </mat-form-field>
 
-      <button mat-flat-button color="primary" (click)="save()" color="accent" id="export">Bild exportieren</button>
+      <button mat-flat-button color="primary" color="accent" id="export">Bild exportieren</button>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div id="container" class="mat-elevation-z2 {{platform}}">
-      <div id="preview" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
-        <img src="/assets/{{backgroundImage}}.jpg" *ngIf="backgroundImage">
-        <div id="mainImageContainer" [class.cropped]="cropImage">
-          <img class="mainImage" #mainImage (mousedown)="activateDragging($event, mainImage)"
-               (wheel)="zoom($event)" style="height: {{zoomFactor*mainImage.naturalHeight}}px;">
+    <div id="previews" style="left: -{{activeSharePic*100}}%;">
+      <ng-container *ngFor="let sharepic of sharePics; let i = index">
+        <div class="previewOutlet" style="left: {{i*100}}%;">
+          <app-sharepic-preview [sharePic]="sharepic"></app-sharepic-preview>
         </div>
-        <mat-list id="text" [class.noBackground]="!backgroundImage" [class.noTitle]="!title">
-          <ng-container *ngFor="let row of text2html(text)">
-            <mat-list-item [class.hidden]="!row.text">
-              <mat-icon mat-list-icon *ngIf="row.icon">fiber_manual_record</mat-icon>
-              {{row.text}}
-            </mat-list-item>
-          </ng-container>
-        </mat-list>
-        <div class="titles">
-          <div class="title" *ngIf="title">
-        <span>
-          {{title}}
-        </span>
-          </div>
-          <div class="subtitle" *ngIf="subtitle" [class.inverted]="subtitleColor=='green'" [class.firstTitle]="!title">
-        <span>
-          {{subtitle}}
-        </span>
-          </div>
-        </div>
-        <div class="copyright" [class.inverted]="copyrightColor[0]=='w'"
-             [class.shadow]="copyrightColor=='white_with_shadow'">
-          {{copyright}}
-        </div>
-        <img class="logo {{logoScheme[1]}}" src="/assets/logo_gpka_{{logoScheme[0]}}.png">
-      </div>
+      </ng-container>
     </div>
+    <button mat-stroked-button color="primary" id="buttonPrevious" *ngIf="activeSharePic>0"
+            (click)="activeSharePic=activeSharePic-1">
+      <mat-icon>chevron_left</mat-icon>
+    </button>
+    <button mat-stroked-button color="primary" id="buttonNext" *ngIf="activeSharePic<sharePics.length-1"
+            (click)="activeSharePic=activeSharePic+1">
+      <mat-icon>chevron_right</mat-icon>
+    </button>
+    <button mat-stroked-button color="primary" id="buttonNew" *ngIf="activeSharePic==sharePics.length-1"
+            (click)="newSharePic()">
+      <mat-icon>add</mat-icon>
+    </button>
   </mat-sidenav-content>
 </mat-sidenav-container>
 

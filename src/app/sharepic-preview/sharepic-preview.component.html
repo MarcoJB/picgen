@@ -1,0 +1,35 @@
+<div id="container" class="mat-elevation-z2 {{sharePic.platform}}">
+  <div id="preview" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
+    <img src="/assets/{{sharePic.backgroundImage}}.jpg" *ngIf="sharePic.backgroundImage">
+    <div id="mainImageContainer" [class.cropped]="sharePic.cropImage">
+      <img class="mainImage" #mainImage (mousedown)="activateDragging($event, mainImage)"
+           (wheel)="zoom($event)" style="height: {{sharePic.zoomFactor*mainImage.naturalHeight}}px;">
+    </div>
+    <mat-list id="text" [class.noBackground]="!sharePic.backgroundImage" [class.noTitle]="!sharePic.title">
+      <ng-container *ngFor="let row of text2html(sharePic.text)">
+        <mat-list-item [class.hidden]="!row.text">
+          <mat-icon mat-list-icon *ngIf="row.icon">fiber_manual_record</mat-icon>
+          {{row.text}}
+        </mat-list-item>
+      </ng-container>
+    </mat-list>
+    <div class="titles">
+      <div class="title" *ngIf="sharePic.title">
+        <span>
+          {{sharePic.title}}
+        </span>
+      </div>
+      <div class="subtitle" *ngIf="sharePic.subtitle" [class.inverted]="sharePic.subtitleColor=='green'"
+           [class.firstTitle]="!sharePic.title">
+        <span>
+          {{sharePic.subtitle}}
+        </span>
+      </div>
+    </div>
+    <div class="copyright" [class.inverted]="sharePic.copyrightColor[0]=='w'"
+         [class.shadow]="sharePic.copyrightColor=='white_with_shadow'">
+      {{sharePic.copyright}}
+    </div>
+    <img class="logo {{sharePic.logoScheme[1]}}" src="/assets/logo_gpka_{{sharePic.logoScheme[0]}}.png">
+  </div>
+</div>

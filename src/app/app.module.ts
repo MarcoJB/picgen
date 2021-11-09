@@ -17,11 +17,13 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatListModule} from "@angular/material/list";
+import { SharepicPreviewComponent } from './sharepic-preview/sharepic-preview.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    EditorComponent
+    EditorComponent,
+    SharepicPreviewComponent
   ],
     imports: [
       BrowserModule,

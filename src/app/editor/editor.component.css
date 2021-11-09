@@ -258,201 +258,43 @@ mat-sidenav mat-form-field {
   width: 100%;
 }
 
-mat-sidenav-content {
+.mat-drawer-content {
+  overflow: hidden;
+}
+
+#previews {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: left 200MS ease;
+}
+
+.previewOutlet {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-#container {
-  width: min(min(1200px, calc(100vh - 114px)), calc(100vw - 450px));
-  height: min(min(1200px, calc(100vh - 114px)), calc(100vw - 450px));
-  font-family: "Helvetica Neue LT";
-}
-
-#container.FACEBOOK {
-  width: min(min(1200px, calc(200vh - 228px)), calc(100vw - 450px));
-  height: min(min(600px, calc(100vh - 114px)), calc(50vw - 225px));
-}
-
-@media (max-width: 800px) {
-  #container {
-    width: min(min(1200px, calc(100vh - 114px)), calc(100vw - 50px));
-    height: min(min(1200px, calc(100vh - 114px)), calc(100vw - 50px));
-  }
-
-  #container.FACEBOOK {
-    width: min(min(1200px, calc(200vh - 228px)), calc(100vw - 50px));
-    height: min(min(600px, calc(100vh - 114px)), calc(50vw - 25px));
-  }
-}
-
-#preview {
-  position: relative;
-  width: 1200px;
-  height: 1200px;
-  background-color: white;
-  transform-origin: top left;
-  overflow: hidden;
-}
-
-#container.FACEBOOK #preview {
-  height: 600px;
-}
-
-.saving {
-  transform: scale(1) !important;
-}
-
-#mainImageContainer {
+#buttonPrevious, #buttonNext, #buttonNew {
+  border-radius: 50%;
+  padding: 15px;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow: hidden;
+  top: 50%;
+  margin-top: -33px;
 }
 
-#mainImageContainer.cropped {
-  top: 305px;
-  bottom: 125px;
+#buttonPrevious {
+  left: 20px;
 }
 
-.mainImage {
-  position: absolute;
-  cursor: grab;
-}
-
-#text {
-  position: absolute;
-  top: 340px;
-  left: 24px;
-  right: 24px;
-  margin: 0;
-}
-
-#text mat-list-item {
-  font-size: 40px;
-  color: white;
-  font-weight: 45;
-}
-
-#text.noBackground mat-list-item {
-  color: black;
-}
-
-#text.noTitle {
-  top: 230px;
-}
-
-#text mat-icon {
-  transform: scale(0.85);
-  margin-right: 10px;
-}
-
-.hidden {
-  visibility: hidden;
-}
-
-.titles {
-  position: absolute;
-  top: 0;
-  left: 45px;
-  transform: rotate(-5deg);
-  transform-origin: top left;
-  padding-top: 85px;
-  font-weight: bold;
-}
-
-#container.FACEBOOK #preview .titles {
-  transform: rotate(-5deg) scale(0.9);
-}
-
-.title {
-  border-top: solid 80px #fefe00;
-  border-right: solid 15px transparent;
-  height: 0;
-  display: inline-block;
-  font-size: 65px;
-  line-height: 80px;
-  padding: 0 15px;
-  white-space: nowrap;
-}
-
-.title span {
-  position: relative;
-  top: -76px;
-}
-
-.subtitle {
-  position: absolute;
-  top: 195px;
-  left: 0;
-  border-top: solid 80px #73bd1e;
-  border-right: solid 15px transparent;
-  height: 0;
-  display: inline-block;
-  font-size: 55px;
-  line-height: 80px;
-  padding: 0 15px;
-  color: white;
-  white-space: nowrap;
-}
-
-.subtitle.inverted {
-  border-top-color: white;
-  color: #73bd1e;
-}
-
-.subtitle.firstTitle {
-  top: auto;
-}
-
-.subtitle span {
-  position: relative;
-  top: -76px;
-}
-
-.copyright {
-  color: black;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  font-size: 23px;
-  height: 0;
-  padding: 110px 120px 40px 50px;
-  background-position: right;
-}
-
-.copyright.inverted {
-  color:  white;
-}
-
-.copyright.shadow {
-  background-image: url(/assets/copyright_shadow.png);
-}
-
-::ng-deep #logoConfig .mat-form-field-underline {
-  display: none;
-}
-
-.logo {
-  width: 290px;
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-}
-
-.logo.g {
-  background-color: #73be1e;
-}
-
-.logo.b {
-  background-color: black;
-}
-
-.logo.w {
-  background-color: white;
+#buttonNext, #buttonNew {
+  right: 20px;
 }
 
 #exportOverlay {

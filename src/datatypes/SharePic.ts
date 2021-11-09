@@ -1,0 +1,23 @@
+import {ElementRef, ViewChild} from "@angular/core";
+
+export class SharePic {
+  platform = "INSTAGRAM"
+  title = 'Überschrift'
+  subtitle = 'Unterüberschrift'
+  subtitleColor = "white"
+  copyright = '© Greenpeace Karlsruhe'
+  copyrightColor = "black"
+  logoScheme = "wg"
+  mainImage: string = ""
+  mainImageSize = "FULL_HEIGHT"
+  zoomFactor = 1
+  mainImageHorizontalPositioning = "CENTER"
+  mainImageVerticalPositioning = "CENTER"
+  imagePosition = {x: 0, y: 0}
+  backgroundImage = ""
+  cropImage = false
+  text = ""
+
+  constructor() {
+  }
+}
