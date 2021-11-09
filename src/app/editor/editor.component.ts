@@ -81,4 +81,8 @@ export class EditorComponent implements OnInit {
     this.sharePics.push(new SharePic())
     this.activeSharePic++
   }
+
+  deleteSharePic() {
+    
+  }
 }

@@ -1,23 +1,23 @@
 #container {
-  width: min(min(1200px, calc(100vh - 114px)), calc(100vw - 450px));
-  height: min(min(1200px, calc(100vh - 114px)), calc(100vw - 450px));
+  width: min(min(1200px, calc(100vh - 174px)), calc(100vw - 450px));
+  height: min(min(1200px, calc(100vh - 174px)), calc(100vw - 450px));
   font-family: "Helvetica Neue LT";
 }
 
 #container.FACEBOOK {
-  width: min(min(1200px, calc(200vh - 228px)), calc(100vw - 450px));
-  height: min(min(600px, calc(100vh - 114px)), calc(50vw - 225px));
+  width: min(min(1200px, calc(200vh - 348px)), calc(100vw - 450px));
+  height: min(min(600px, calc(100vh - 174px)), calc(50vw - 225px));
 }
 
 @media (max-width: 800px) {
   #container {
-    width: min(min(1200px, calc(100vh - 114px)), calc(100vw - 50px));
-    height: min(min(1200px, calc(100vh - 114px)), calc(100vw - 50px));
+    width: min(min(1200px, calc(100vh - 174px)), calc(100vw - 50px));
+    height: min(min(1200px, calc(100vh - 174px)), calc(100vw - 50px));
   }
 
   #container.FACEBOOK {
-    width: min(min(1200px, calc(200vh - 228px)), calc(100vw - 50px));
-    height: min(min(600px, calc(100vh - 114px)), calc(50vw - 25px));
+    width: min(min(1200px, calc(200vh - 348px)), calc(100vw - 50px));
+    height: min(min(600px, calc(100vh - 174px)), calc(50vw - 25px));
   }
 }
 

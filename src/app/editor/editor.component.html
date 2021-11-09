@@ -141,18 +141,28 @@
         </div>
       </ng-container>
     </div>
-    <button mat-stroked-button color="primary" id="buttonPrevious" *ngIf="activeSharePic>0"
+    <button mat-icon-button color="" id="buttonPrevious" style="visibility: {{activeSharePic>0?'visible':'hidden'}};"
             (click)="activeSharePic=activeSharePic-1">
       <mat-icon>chevron_left</mat-icon>
     </button>
-    <button mat-stroked-button color="primary" id="buttonNext" *ngIf="activeSharePic<sharePics.length-1"
+    <button mat-icon-button color="" id="buttonDelete" (click)="deleteSharePic()">
+      <mat-icon>clear</mat-icon>
+    </button>
+    <button mat-icon-button color="" id="buttonNext" *ngIf="activeSharePic<sharePics.length-1"
             (click)="activeSharePic=activeSharePic+1">
       <mat-icon>chevron_right</mat-icon>
     </button>
-    <button mat-stroked-button color="primary" id="buttonNew" *ngIf="activeSharePic==sharePics.length-1"
+    <button mat-icon-button color="primary" id="buttonNew" *ngIf="activeSharePic==sharePics.length-1"
             (click)="newSharePic()">
       <mat-icon>add</mat-icon>
     </button>
+    <div id="dotOverview">
+      <ng-container *ngFor="let sharepic of sharePics; let i = index">
+        <div class="dot" [class.active]="i==activeSharePic" (click)="activeSharePic=i">
+          <div></div>
+        </div>
+      </ng-container>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
 
