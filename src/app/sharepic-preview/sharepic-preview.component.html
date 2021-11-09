@@ -1,11 +1,11 @@
-<div id="container" class="mat-elevation-z2 {{sharePic.platform}}">
-  <div id="preview" [class.saving]="saving" style="transform: scale({{scaleFactor}});">
+<div class="container" #container class="mat-elevation-z2 {{sharePic.platform}}">
+  <div class="preview" #preview [class.saving]="saving" style="transform: scale({{scaleFactor}});">
     <img src="/assets/{{sharePic.backgroundImage}}.jpg" *ngIf="sharePic.backgroundImage">
-    <div id="mainImageContainer" [class.cropped]="sharePic.cropImage">
-      <img class="mainImage" #mainImage (mousedown)="activateDragging($event, mainImage)"
+    <div class="mainImageContainer" [class.cropped]="sharePic.cropImage">
+      <img class="mainImage" src="{{sharePic.mainImage}}" #mainImage (mousedown)="activateDragging($event, mainImage)"
            (wheel)="zoom($event)" style="height: {{sharePic.zoomFactor*mainImage.naturalHeight}}px;">
     </div>
-    <mat-list id="text" [class.noBackground]="!sharePic.backgroundImage" [class.noTitle]="!sharePic.title">
+    <mat-list class="text" [class.noBackground]="!sharePic.backgroundImage" [class.noTitle]="!sharePic.title">
       <ng-container *ngFor="let row of text2html(sharePic.text)">
         <mat-list-item [class.hidden]="!row.text">
           <mat-icon mat-list-icon *ngIf="row.icon">fiber_manual_record</mat-icon>

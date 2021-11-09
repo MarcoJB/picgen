@@ -15,6 +15,8 @@ export class EditorComponent implements OnInit {
   fileDragging = false
   exporting = false
 
+  @HostBinding('class.grabbing') grabbing: boolean = false
+
   constructor() { }
 
   ngOnInit() {
@@ -56,6 +58,12 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  triggerChangeFormatEvent() {
+    setTimeout(() => {
+      window.dispatchEvent(new Event('changeFormat'))
+    })
+  }
+
   fileSelected(event: Event) {
     // @ts-ignore
     this.loadImage(event.target.files[0])
@@ -68,7 +76,7 @@ export class EditorComponent implements OnInit {
     reader.addEventListener("load", () => {
       if (reader.result !== null) {
         this.sharePics[this.activeSharePic].mainImage = reader.result.toString()
-        // setTimeout(() => this.resetImage())
+        this.triggerChangeFormatEvent()
       }
     }, false);
 
@@ -83,6 +91,12 @@ export class EditorComponent implements OnInit {
   }
 
   deleteSharePic() {
-    
+    this.sharePics.splice(this.activeSharePic, 1)
+
+    if (this.sharePics.length == 0) {
+      this.sharePics.push(new SharePic())
+    } else if (this.activeSharePic >= this.sharePics.length) {
+      this.activeSharePic = this.sharePics.length - 1
+    }
   }
 }

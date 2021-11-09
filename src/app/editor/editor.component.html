@@ -8,7 +8,7 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav [mode]="smallScreen?'over':'side'" opened="{{!smallScreen}}" [autoFocus]="false">
     <div id="sidenavInner">
-      <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].platform" id="platformConfig" class="configElement">
+      <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].platform" id="platformConfig" class="configElement" (change)="triggerChangeFormatEvent()">
         <mat-button-toggle value="INSTAGRAM">Instagram</mat-button-toggle>
         <mat-button-toggle value="FACEBOOK">Facebook</mat-button-toggle>
       </mat-button-toggle-group>
@@ -68,7 +68,7 @@
         </div>
 
         <div id="mainImageConfig" class="configElement">
-          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageSize" id="mainImageSizeConfig">
+          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageSize" id="mainImageSizeConfig" (change)="triggerChangeFormatEvent()">
             <mat-button-toggle value="FULL_HEIGHT">
               <mat-icon>expand</mat-icon>
             </mat-button-toggle>
@@ -78,7 +78,7 @@
           </mat-button-toggle-group>
 
           <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageVerticalPositioning"
-                                   id="mainImageVerticalConfig">
+                                   id="mainImageVerticalConfig" (change)="triggerChangeFormatEvent()">
             <mat-button-toggle value="TOP">
               <mat-icon>vertical_align_top</mat-icon>
             </mat-button-toggle>
@@ -91,7 +91,7 @@
           </mat-button-toggle-group>
 
           <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageHorizontalPositioning"
-                                   id="mainImageHorizontalConfig">
+                                   id="mainImageHorizontalConfig" (change)="triggerChangeFormatEvent()">
             <mat-button-toggle value="LEFT">
               <mat-icon>vertical_align_top</mat-icon>
             </mat-button-toggle>
@@ -103,7 +103,7 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].cropImage" id="mainImageCropConfig">
+          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].cropImage" id="mainImageCropConfig" (change)="triggerChangeFormatEvent()">
             <mat-button-toggle [value]="false">
               <mat-icon>settings_overscan</mat-icon>
             </mat-button-toggle>
@@ -137,11 +137,11 @@
     <div id="previews" style="left: -{{activeSharePic*100}}%;">
       <ng-container *ngFor="let sharepic of sharePics; let i = index">
         <div class="previewOutlet" style="left: {{i*100}}%;">
-          <app-sharepic-preview [sharePic]="sharepic"></app-sharepic-preview>
+          <app-sharepic-preview [sharePic]="sharepic" (grabStatusChange)="grabbing=$event"></app-sharepic-preview>
         </div>
       </ng-container>
     </div>
-    <button mat-icon-button color="" id="buttonPrevious" style="visibility: {{activeSharePic>0?'visible':'hidden'}};"
+    <button mat-icon-button color="" id="buttonPrevious" [disabled]="activeSharePic==0"
             (click)="activeSharePic=activeSharePic-1">
       <mat-icon>chevron_left</mat-icon>
     </button>

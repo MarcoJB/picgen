@@ -6,8 +6,8 @@
   overflow: hidden;
 }
 
-:host.dragging, :host.dragging * {
-  cursor: grabbing;
+:host.grabbing, :host.grabbing * {
+  cursor: grabbing !important;
 }
 
 mat-toolbar {

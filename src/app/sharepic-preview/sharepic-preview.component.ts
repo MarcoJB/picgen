@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostBinding, HostListener, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostBinding, HostListener, Input, Output, OnInit, ViewChild, EventEmitter} from '@angular/core';
 import {SharePic} from "../../datatypes/SharePic";
 import html2canvas from "html2canvas";
 import {ListItem} from "../../datatypes/ListItem";
@@ -10,25 +10,30 @@ import {ListItem} from "../../datatypes/ListItem";
 })
 export class SharepicPreviewComponent implements OnInit {
   @Input() sharePic!: SharePic
+  @Output() grabStatusChange = new EventEmitter<boolean>();
 
   saving = false
   scaleFactor = 1
   @ViewChild('mainImage') mainImage!: ElementRef<HTMLImageElement>
+  @ViewChild('container') container!: ElementRef<HTMLDivElement>
+  @ViewChild('preview') preview!: ElementRef<HTMLDivElement>
   dragStartPosition = {x: 0, y: 0}
   imageHeight = 1200
   exporting = false
 
-  @HostBinding('class.dragging') draggingElement: HTMLImageElement|null = null
+  @HostBinding('class.grabbing') draggingElement: HTMLImageElement|null = null
 
   constructor() { }
 
   ngOnInit() {
-    this.calcScaleFactor();
+    setTimeout(() => {
+      this.calcScaleFactor()
+    })
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(even:any) {
-    this.calcScaleFactor()
+  @HostListener('window:changeFormat', ['$event'])
+  onChangeFormat(even:any) {
+    this.changeFormat()
   }
 
   changeFormat() {
@@ -46,7 +51,7 @@ export class SharepicPreviewComponent implements OnInit {
 
   calcScaleFactor() {
     // @ts-ignore
-    this.scaleFactor = document.querySelector("#container").offsetWidth / 1200
+    this.scaleFactor = this.container.nativeElement.offsetWidth / 1200
   }
 
   save() {
@@ -61,7 +66,7 @@ export class SharepicPreviewComponent implements OnInit {
 
   createImage() {
     // @ts-ignore
-    html2canvas(document.querySelector("#preview")).then(canvas => {
+    html2canvas(this.preview.nativeElement).then(canvas => {
       const link = document.createElement("a")
       link.setAttribute('download', 'picgen.png')
       link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png",
@@ -114,6 +119,8 @@ export class SharepicPreviewComponent implements OnInit {
   }
 
   activateDragging(event: MouseEvent, imageElement: HTMLImageElement) {
+    this.grabStatusChange.emit(true)
+
     this.draggingElement = imageElement
     this.dragStartPosition.x = event.clientX
     this.dragStartPosition.y = event.clientY
@@ -140,6 +147,8 @@ export class SharepicPreviewComponent implements OnInit {
 
   @HostListener('window:mouseup', ['$event'])
   deactivateDragging(event: MouseEvent) {
+    this.grabStatusChange.emit(false)
+
     this.sharePic.imagePosition.x += this.sharePic.imagePosition.x + (event.clientX - this.dragStartPosition.x) / this.scaleFactor
     this.sharePic.imagePosition.y += this.sharePic.imagePosition.y + (event.clientY - this.dragStartPosition.y) / this.scaleFactor
     this.draggingElement = null
