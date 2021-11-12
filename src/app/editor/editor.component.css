@@ -15,9 +15,22 @@ mat-toolbar {
   color: white !important;
   z-index: 2;
   padding: 0 8px;
-  grid-gap: 8px;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 1fr auto;
+}
+
+@media (max-width: 800px) {
+  mat-toolbar {
+    grid-template-columns: auto 1fr auto;
+  }
+}
+
+mat-toolbar span {
+  margin-left: 8px;
+}
+
+::ng-deep .darkMode mat-toolbar #darkModeButton {
+  color: #303030;
 }
 
 mat-sidenav-container {

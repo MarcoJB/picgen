@@ -2,6 +2,7 @@ import {Component, ElementRef, HostBinding, HostListener, OnInit, ViewChildren, 
 import html2canvas from "html2canvas";
 import {ListItem} from "../../datatypes/ListItem";
 import {SharePic} from "../../datatypes/SharePic";
+import { GeneralService } from '../general.service';
 import { SharepicPreviewComponent } from '../sharepic-preview/sharepic-preview.component';
 
 @Component({
@@ -19,7 +20,7 @@ export class EditorComponent implements OnInit {
 
   @HostBinding('class.grabbing') grabbing: boolean = false
 
-  constructor() { }
+  constructor(public generalService: GeneralService) { }
 
   ngOnInit() {
     this.sharePics.push(new SharePic())
@@ -63,7 +64,7 @@ export class EditorComponent implements OnInit {
   triggerChangeFormatEvent() {
     this.sharePicReferences.toArray().forEach((sharepicPrevieew: SharepicPreviewComponent) => {
       sharepicPrevieew.changeFormat()
-     })
+    })
   }
 
   fileSelected(event: Event) {

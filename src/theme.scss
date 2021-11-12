@@ -5,20 +5,20 @@
 $black-87-opacity: rgba(0, 0, 0, 0.87);
 
 $green: (
-  50 : #edf9e0,
-  100 : #d1f0b3,
-  200 : #b3e680,
-  300 : #94db4d,
-  400 : #7dd426,
-  500 : #66cc00,
-  600 : #5ec700,
-  700 : #53c000,
-  800 : #49b900,
-  900 : #38ad00,
-  A100 : #e1ffd7,
-  A200 : #baffa4,
-  A400 : #94ff71,
-  A700 : #81ff58,
+  50 : #eef7e4,
+  100 : #d5ebbc,
+  200 : #b9de8f,
+  300 : #9dd162,
+  400 : #88c740,
+  500 : #73bd1e,
+  600 : #6bb71a,
+  700 : #60ae16,
+  800 : #56a612,
+  900 : #43980a,
+  A100 : #daffc6,
+  A200 : #b9ff93,
+  A400 : #98ff60,
+  A700 : #87ff47,
   contrast: (
     50 : $black-87-opacity,
     100 : $black-87-opacity,
@@ -28,7 +28,7 @@ $green: (
     500 : $black-87-opacity,
     600 : $black-87-opacity,
     700 : $black-87-opacity,
-    800 : $black-87-opacity,
+    800 : #ffffff,
     900 : #ffffff,
     A100 : $black-87-opacity,
     A200 : $black-87-opacity,
@@ -105,14 +105,30 @@ $pink: (
 
 
 
-$my-primary: mat.define-palette($green, 500);
-$my-accent: mat.define-palette($orange, 500);
+$my-primary: mat.define-palette($green);
+$my-accent: mat.define-palette($orange);
+$my-warn: mat.define-palette($pink);
 
 $my-theme: mat.define-light-theme((
  color: (
    primary: $my-primary,
    accent: $my-accent,
+   warn: $my-warn
  )
 ));
 
 @include mat.all-component-themes($my-theme);
+
+$my-dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $my-primary,
+      accent: $my-accent,
+      warn: $my-warn,
+    ),
+  )
+);
+
+.darkMode {
+  @include mat.all-component-colors($my-dark-theme);
+}

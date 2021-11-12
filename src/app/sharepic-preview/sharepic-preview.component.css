@@ -39,6 +39,10 @@
   flex-shrink: 0;
 }
 
+::ng-deep .darkMode .preview {
+  background-color: #424242;
+}
+
 .container.FACEBOOK .preview {
   height: 600px;
 }
@@ -120,6 +124,7 @@
   line-height: 80px;
   padding: 0 15px;
   white-space: nowrap;
+  color: black;
 }
 
 .title span {

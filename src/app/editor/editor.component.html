@@ -1,5 +1,5 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button (click)="sidenav.toggle()" *ngIf="smallScreen">
+  <button id="sidenavButton" mat-icon-button (click)="sidenav.toggle()" *ngIf="smallScreen">
     <mat-icon>menu</mat-icon>
   </button>
   <span>Sharepic Generator</span>
@@ -10,6 +10,9 @@
     <button mat-menu-item>Item 1</button>
     <button mat-menu-item>Item 2</button>
   </mat-menu>-->
+  <button id="darkModeButton" mat-icon-button (click)="generalService.darkMode=!generalService.darkMode">
+    <mat-icon>bedtime</mat-icon>
+  </button>
 </mat-toolbar>
 
 <mat-sidenav-container>
