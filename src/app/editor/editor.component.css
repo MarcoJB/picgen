@@ -251,6 +251,24 @@ mat-sidenav mat-form-field {
   border-left: none;
 }
 
+#exportConfig {
+  display: flex;
+  grid-column-gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+#exportConfig mat-form-field {
+  width: auto;
+  flex-grow: 100;
+}
+
+#exportConfig button {
+  flex-shrink: 0;
+  flex-grow: 1;
+  width: auto;
+}
+
 #export {
   width: 100%;
 }

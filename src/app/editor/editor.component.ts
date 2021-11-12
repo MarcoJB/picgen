@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostBinding, HostListener, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostBinding, HostListener, OnInit, ViewChildren, QueryList} from '@angular/core';
 import html2canvas from "html2canvas";
 import {ListItem} from "../../datatypes/ListItem";
 import {SharePic} from "../../datatypes/SharePic";
@@ -14,6 +14,7 @@ export class EditorComponent implements OnInit {
   activeSharePic: number = 0
   fileDragging = false
   exporting = false
+  @ViewChildren("SharePic") sharePicReferences!: QueryList<ElementRef>;
 
   @HostBinding('class.grabbing') grabbing: boolean = false
 
@@ -78,7 +79,7 @@ export class EditorComponent implements OnInit {
         this.sharePics[this.activeSharePic].mainImage = reader.result.toString()
         this.triggerChangeFormatEvent()
       }
-    }, false);
+    }, false)
 
     if (image) {
       reader.readAsDataURL(image)
@@ -98,5 +99,10 @@ export class EditorComponent implements OnInit {
     } else if (this.activeSharePic >= this.sharePics.length) {
       this.activeSharePic = this.sharePics.length - 1
     }
+  }
+
+  exportActiveSharePic() {
+    // @ts-ignore
+    this.sharePicReferences.toArray()[this.activeSharePic].container.nativeElement.dispatchEvent(new Event("exportSharePic"))
   }
 }

@@ -6,6 +6,7 @@
   width: min(min(1200px, calc(100vh - 174px)), calc(100vw - 450px));
   height: min(min(1200px, calc(100vh - 174px)), calc(100vw - 450px));
   font-family: "Helvetica Neue LT";
+  overflow: hidden;
 }
 
 .container.FACEBOOK {

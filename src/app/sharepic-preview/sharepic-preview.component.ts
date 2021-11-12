@@ -10,6 +10,7 @@ import {ListItem} from "../../datatypes/ListItem";
 })
 export class SharepicPreviewComponent implements OnInit {
   @Input() sharePic!: SharePic
+  @Input() sharePicIndex!: number
   @Output() grabStatusChange = new EventEmitter<boolean>();
 
   saving = false
@@ -32,7 +33,12 @@ export class SharepicPreviewComponent implements OnInit {
   }
 
   @HostListener('window:changeFormat', ['$event'])
-  onChangeFormat(even:any) {
+  onChangeFormat() {
+    this.changeFormat()
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
     this.changeFormat()
   }
 
@@ -68,8 +74,8 @@ export class SharepicPreviewComponent implements OnInit {
     // @ts-ignore
     html2canvas(this.preview.nativeElement).then(canvas => {
       const link = document.createElement("a")
-      link.setAttribute('download', 'picgen.png')
-      link.setAttribute('href', canvas.toDataURL("image/png").replace("image/png",
+      link.setAttribute('download', this.sharePic.exportName + '.jpg')
+      link.setAttribute('href', canvas.toDataURL("image/jpeg", 0.8).replace("image/jpeg",
         "image/octet-stream"))
       link.click()
       this.exporting = false;
@@ -157,28 +163,12 @@ export class SharepicPreviewComponent implements OnInit {
   zoom(event: WheelEvent) {
     const img = this.mainImage.nativeElement
 
-    const imagePos = {
-      // @ts-ignore
-      x: event.layerX/this.zoomFactor,
-      // @ts-ignore
-      y: event.layerY/this.zoomFactor
-    }
+    const changeFactor = event.deltaY < 0 ? 1.05 : 1/1.05
 
-    if (event.deltaY < 0) {
-      this.sharePic.zoomFactor *= 1.05
-    } else {
-      this.sharePic.zoomFactor /= 1.05
-    }
+    this.sharePic.zoomFactor *= changeFactor
 
-    const newPosition = {
-      x: this.sharePic.zoomFactor*imagePos.x,
-      y: this.sharePic.zoomFactor*imagePos.y
-    }
-
-    // @ts-ignore
-    img.style.left = parseFloat(img.style.left) - (newPosition.x - event.layerX) + "px"
-    // @ts-ignore
-    img.style.top = parseFloat(img.style.top) - (newPosition.y - event.layerY) + "px"
+    img.style.left = parseFloat(img.style.left) - (changeFactor - 1) * event.offsetX + "px"
+    img.style.top = parseFloat(img.style.top) - (changeFactor - 1) * event.offsetY + "px"
 
     // Snapping in zoom direction
     if (Math.abs(this.imageHeight - this.sharePic.zoomFactor*img.naturalHeight) < 1) {

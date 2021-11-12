@@ -129,15 +129,21 @@
         <textarea [(ngModel)]="sharePics[activeSharePic].text" matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
                   cdkAutosizeMaxRows="10"></textarea>
       </mat-form-field>
-
-      <button mat-flat-button color="primary" color="accent" id="export">Bild exportieren</button>
+      
+      <div id="exportConfig" class="configElement">
+        <mat-form-field>
+          <mat-label>Bildname</mat-label>
+          <input matInput [(ngModel)]="sharePics[activeSharePic].exportName" placeholder="Bildname">
+        </mat-form-field>
+        <button mat-flat-button color="primary" color="accent" id="export" (click)="exportActiveSharePic()">Exportieren</button>
+      </div>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
     <div id="previews" style="left: -{{activeSharePic*100}}%;">
       <ng-container *ngFor="let sharepic of sharePics; let i = index">
         <div class="previewOutlet" style="left: {{i*100}}%;">
-          <app-sharepic-preview [sharePic]="sharepic" (grabStatusChange)="grabbing=$event"></app-sharepic-preview>
+          <app-sharepic-preview #SharePic [sharePic]="sharepic" (grabStatusChange)="grabbing=$event"></app-sharepic-preview>
         </div>
       </ng-container>
     </div>

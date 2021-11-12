@@ -1,5 +1,3 @@
-import {ElementRef, ViewChild} from "@angular/core";
-
 export class SharePic {
   platform = "INSTAGRAM"
   title = 'Überschrift'
@@ -17,6 +15,7 @@ export class SharePic {
   backgroundImage = ""
   cropImage = false
   text = ""
+  exportName = "SharePic"
 
   constructor() {
   }
