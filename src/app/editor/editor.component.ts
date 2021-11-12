@@ -2,6 +2,7 @@ import {Component, ElementRef, HostBinding, HostListener, OnInit, ViewChildren, 
 import html2canvas from "html2canvas";
 import {ListItem} from "../../datatypes/ListItem";
 import {SharePic} from "../../datatypes/SharePic";
+import { SharepicPreviewComponent } from '../sharepic-preview/sharepic-preview.component';
 
 @Component({
   selector: 'app-editor',
@@ -14,7 +15,7 @@ export class EditorComponent implements OnInit {
   activeSharePic: number = 0
   fileDragging = false
   exporting = false
-  @ViewChildren("SharePic") sharePicReferences!: QueryList<ElementRef>;
+  @ViewChildren("SharePic") sharePicReferences!: QueryList<SharepicPreviewComponent>;
 
   @HostBinding('class.grabbing') grabbing: boolean = false
 
@@ -60,9 +61,9 @@ export class EditorComponent implements OnInit {
   }
 
   triggerChangeFormatEvent() {
-    setTimeout(() => {
-      window.dispatchEvent(new Event('changeFormat'))
-    })
+    this.sharePicReferences.toArray().forEach((sharepicPrevieew: SharepicPreviewComponent) => {
+      sharepicPrevieew.changeFormat()
+     })
   }
 
   fileSelected(event: Event) {
@@ -102,7 +103,23 @@ export class EditorComponent implements OnInit {
   }
 
   exportActiveSharePic() {
-    // @ts-ignore
-    this.sharePicReferences.toArray()[this.activeSharePic].container.nativeElement.dispatchEvent(new Event("exportSharePic"))
+    this.sharePicReferences.toArray()[this.activeSharePic].saving = true;
+    this.exporting = true;
+
+    setTimeout(() => {
+      this.sharePicReferences.toArray()[this.activeSharePic].saving = false;
+      this.createImage()
+    }, 100)
+  }
+
+  createImage() {
+    html2canvas(this.sharePicReferences.toArray()[this.activeSharePic].preview.nativeElement).then(canvas => {
+      const link = document.createElement("a")
+      link.setAttribute('download', this.sharePics[this.activeSharePic].exportName + '.jpg')
+      link.setAttribute('href', canvas.toDataURL("image/jpeg", 0.8).replace("image/jpeg",
+        "image/octet-stream"))
+      link.click()
+      this.exporting = false;
+    });
   }
 }

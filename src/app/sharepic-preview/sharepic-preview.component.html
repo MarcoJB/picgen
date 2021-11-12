@@ -1,4 +1,4 @@
-<div class="container" #container class="mat-elevation-z2 {{sharePic.platform}}" (exportSharePic)="save()">
+<div class="container" #container class="mat-elevation-z2 {{sharePic.platform}}">
   <div class="preview" #preview [class.saving]="saving" style="transform: scale({{scaleFactor}});">
     <img src="/assets/{{sharePic.backgroundImage}}.jpg" *ngIf="sharePic.backgroundImage">
     <div class="mainImageContainer" [class.cropped]="sharePic.cropImage">

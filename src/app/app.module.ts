@@ -17,7 +17,8 @@ import {MatIconModule} from "@angular/material/icon";
 import {MatButtonModule} from "@angular/material/button";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatListModule} from "@angular/material/list";
-import { SharepicPreviewComponent } from './sharepic-preview/sharepic-preview.component';
+import {SharepicPreviewComponent} from './sharepic-preview/sharepic-preview.component';
+import {MatMenuModule} from '@angular/material/menu';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { SharepicPreviewComponent } from './sharepic-preview/sharepic-preview.co
       MatIconModule,
       MatButtonModule,
       MatProgressSpinnerModule,
-      MatListModule
+      MatListModule,
+      MatMenuModule
     ],
   providers: [],
   bootstrap: [AppComponent]

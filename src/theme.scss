@@ -1,0 +1,118 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$black-87-opacity: rgba(0, 0, 0, 0.87);
+
+$green: (
+  50 : #edf9e0,
+  100 : #d1f0b3,
+  200 : #b3e680,
+  300 : #94db4d,
+  400 : #7dd426,
+  500 : #66cc00,
+  600 : #5ec700,
+  700 : #53c000,
+  800 : #49b900,
+  900 : #38ad00,
+  A100 : #e1ffd7,
+  A200 : #baffa4,
+  A400 : #94ff71,
+  A700 : #81ff58,
+  contrast: (
+    50 : $black-87-opacity,
+    100 : $black-87-opacity,
+    200 : $black-87-opacity,
+    300 : $black-87-opacity,
+    400 : $black-87-opacity,
+    500 : $black-87-opacity,
+    600 : $black-87-opacity,
+    700 : $black-87-opacity,
+    800 : $black-87-opacity,
+    900 : #ffffff,
+    A100 : $black-87-opacity,
+    A200 : $black-87-opacity,
+    A400 : $black-87-opacity,
+    A700 : $black-87-opacity,
+  )
+);
+
+$orange: (
+  50 : #fdf2e0,
+  100 : #fbdfb3,
+  200 : #f9ca80,
+  300 : #f6b54d,
+  400 : #f4a526,
+  500 : #f29500,
+  600 : #f08d00,
+  700 : #ee8200,
+  800 : #ec7800,
+  900 : #e86700,
+  A100 : #ffffff,
+  A200 : #ffe9dc,
+  A400 : #ffcaa9,
+  A700 : #ffba90,
+  contrast: (
+    50 : $black-87-opacity,
+    100 : $black-87-opacity,
+    200 : $black-87-opacity,
+    300 : $black-87-opacity,
+    400 : $black-87-opacity,
+    500 : $black-87-opacity,
+    600 : $black-87-opacity,
+    700 : $black-87-opacity,
+    800 : $black-87-opacity,
+    900 : $black-87-opacity,
+    A100 : $black-87-opacity,
+    A200 : $black-87-opacity,
+    A400 : $black-87-opacity,
+    A700 : $black-87-opacity,
+  )
+);
+
+$pink: (
+  50 : #f7e1eb,
+  100 : #ecb3ce,
+  200 : #df80ad,
+  300 : #d24d8c,
+  400 : #c82773,
+  500 : #be015a,
+  600 : #b80152,
+  700 : #af0148,
+  800 : #a7013f,
+  900 : #99002e,
+  A100 : #ffc4d1,
+  A200 : #ff91a9,
+  A400 : #ff5e82,
+  A700 : #ff456e,
+  contrast: (
+    50 : $black-87-opacity,
+    100 : $black-87-opacity,
+    200 : $black-87-opacity,
+    300 : #ffffff,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : $black-87-opacity,
+    A200 : $black-87-opacity,
+    A400 : $black-87-opacity,
+    A700 : $black-87-opacity,
+  )
+);
+
+
+
+$my-primary: mat.define-palette($green, 500);
+$my-accent: mat.define-palette($orange, 500);
+
+$my-theme: mat.define-light-theme((
+ color: (
+   primary: $my-primary,
+   accent: $my-accent,
+ )
+));
+
+@include mat.all-component-themes($my-theme);

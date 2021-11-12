@@ -32,11 +32,6 @@ export class SharepicPreviewComponent implements OnInit {
     })
   }
 
-  @HostListener('window:changeFormat', ['$event'])
-  onChangeFormat() {
-    this.changeFormat()
-  }
-
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.changeFormat()
@@ -58,28 +53,6 @@ export class SharepicPreviewComponent implements OnInit {
   calcScaleFactor() {
     // @ts-ignore
     this.scaleFactor = this.container.nativeElement.offsetWidth / 1200
-  }
-
-  save() {
-    this.saving = true;
-    this.exporting = true;
-
-    setTimeout(() => {
-      this.saving = false;
-      this.createImage()
-    }, 100)
-  }
-
-  createImage() {
-    // @ts-ignore
-    html2canvas(this.preview.nativeElement).then(canvas => {
-      const link = document.createElement("a")
-      link.setAttribute('download', this.sharePic.exportName + '.jpg')
-      link.setAttribute('href', canvas.toDataURL("image/jpeg", 0.8).replace("image/jpeg",
-        "image/octet-stream"))
-      link.click()
-      this.exporting = false;
-    });
   }
 
   resetImage() {
