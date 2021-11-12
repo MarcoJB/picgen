@@ -43,7 +43,16 @@
       <div id="copyrightConfig" class="configElement">
         <mat-form-field>
           <mat-label>Copyright</mat-label>
-          <input matInput [(ngModel)]="sharePics[activeSharePic].copyright" placeholder="Copyright">
+          <input matInput [(ngModel)]="sharePics[activeSharePic].copyright" 
+            placeholder="Copyright" [matAutocomplete]="auto">
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-option [value]="'© Greenpeace Karlsruhe'">
+              © Greenpeace Karlsruhe
+            </mat-option>
+            <mat-option [value]="'© Greenpeace'">
+              © Greenpeace
+            </mat-option>
+          </mat-autocomplete>
         </mat-form-field>
 
         <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].copyrightColor" id="copyrightColor">

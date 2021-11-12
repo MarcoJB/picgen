@@ -19,6 +19,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatListModule} from "@angular/material/list";
 import {SharepicPreviewComponent} from './sharepic-preview/sharepic-preview.component';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {MatMenuModule} from '@angular/material/menu';
       MatButtonModule,
       MatProgressSpinnerModule,
       MatListModule,
-      MatMenuModule
+      MatMenuModule,
+      MatAutocompleteModule
     ],
   providers: [],
   bootstrap: [AppComponent]
