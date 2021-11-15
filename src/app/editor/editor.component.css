@@ -291,35 +291,53 @@ mat-sidenav mat-form-field {
 }
 
 mat-sidenav-content {
-  display: grid;
+  /*display: grid;
   grid-template-columns: auto auto auto;
   grid-template-rows: 1fr auto auto;
   grid-template-areas: 
     "previews previews previews"
     "button-previous button-delete button-next"
     "dot-overview dot-overview dot-overview";
-  justify-content: space-between;
+  justify-content: space-between;*/
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 #previews {
-  position: absolute;
-  top: 0;
+  grid-area: previews;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+#previewsGroup {
+  position: relative;
+  left: 0;
   width: 100%;
   height: 100%;
-  overflow: visible;
+  display: flex;
   transition: left 200MS ease;
-  grid-area: previews;
 }
 
 .previewOutlet {
-  position: absolute;
-  top: 0;
+  width: 100%;
+  position: relative;
+  padding: 20px;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+app-sharepic-preview {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+#controlButtons {
+  display: flex;
+  justify-content: center;
 }
 
 #buttonPrevious, #buttonNext, #buttonNew, #buttonDelete {
@@ -341,7 +359,6 @@ mat-sidenav-content {
 #dotOverview {
   display: flex;
   justify-content: center;
-  grid-area: dot-overview;
   margin-bottom: 5px;
 }
 

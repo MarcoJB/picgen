@@ -18,23 +18,23 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav [mode]="smallScreen?'over':'side'" opened="{{!smallScreen}}" [autoFocus]="false">
     <div id="sidenavInner">
-      <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].platform" id="platformConfig" class="configElement" (change)="triggerChangeFormatEvent()">
+      <mat-button-toggle-group [(ngModel)]="sharePicSet.sharePics[activeSharePic].platform" id="platformConfig" class="configElement" (change)="triggerChangeFormatEvent();generalService.syncLocalSharePicSets()">
         <mat-button-toggle value="INSTAGRAM">Instagram</mat-button-toggle>
         <mat-button-toggle value="FACEBOOK">Facebook</mat-button-toggle>
       </mat-button-toggle-group>
 
       <mat-form-field class="configElement">
         <mat-label>Überschrift</mat-label>
-        <input matInput [(ngModel)]="sharePics[activeSharePic].title" placeholder="Überschrift">
+        <input matInput [(ngModel)]="sharePicSet.sharePics[activeSharePic].title" placeholder="Überschrift" (change)="generalService.syncLocalSharePicSets()">
       </mat-form-field>
 
       <div id="subtitleConfig" class="configElement">
         <mat-form-field>
           <mat-label>Unterüberschrift</mat-label>
-          <input matInput [(ngModel)]="sharePics[activeSharePic].subtitle" placeholder="Unterüberschrift">
+          <input matInput [(ngModel)]="sharePicSet.sharePics[activeSharePic].subtitle" placeholder="Unterüberschrift" (change)="generalService.syncLocalSharePicSets()">
         </mat-form-field>
 
-        <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].subtitleColor" id="subtitleScheme">
+        <mat-button-toggle-group [(ngModel)]="sharePicSet.sharePics[activeSharePic].subtitleColor" id="subtitleScheme" (change)="generalService.syncLocalSharePicSets()">
           <mat-button-toggle value="white"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="green"><span>Aa</span></mat-button-toggle>
         </mat-button-toggle-group>
@@ -43,9 +43,9 @@
       <div id="copyrightConfig" class="configElement">
         <mat-form-field>
           <mat-label>Copyright</mat-label>
-          <input matInput [(ngModel)]="sharePics[activeSharePic].copyright" 
-            placeholder="Copyright" [matAutocomplete]="auto">
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <input matInput [(ngModel)]="sharePicSet.sharePics[activeSharePic].copyright" 
+            placeholder="Copyright" [matAutocomplete]="auto" (change)="generalService.syncLocalSharePicSets()">
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (optionSelected)="generalService.syncLocalSharePicSets()">
             <mat-option [value]="'© Greenpeace Karlsruhe'">
               © Greenpeace Karlsruhe
             </mat-option>
@@ -55,7 +55,7 @@
           </mat-autocomplete>
         </mat-form-field>
 
-        <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].copyrightColor" id="copyrightColor">
+        <mat-button-toggle-group [(ngModel)]="sharePicSet.sharePics[activeSharePic].copyrightColor" id="copyrightColor" (change)="generalService.syncLocalSharePicSets()">
           <mat-button-toggle value="black"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="white"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="white_with_shadow"><span>Aa</span></mat-button-toggle>
@@ -65,7 +65,7 @@
       <mat-form-field id="logoConfig" class="configElement">
         <mat-label>Logo</mat-label>
         <input matInput value="Logo" hidden>
-        <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].logoScheme" id="logoScheme">
+        <mat-button-toggle-group [(ngModel)]="sharePicSet.sharePics[activeSharePic].logoScheme" id="logoScheme" (change)="generalService.syncLocalSharePicSets()">
           <mat-button-toggle value="wg"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="gw"><span>Aa</span></mat-button-toggle>
           <mat-button-toggle value="gt"><span>Aa</span></mat-button-toggle>
@@ -87,7 +87,8 @@
         </div>
 
         <div id="mainImageConfig" class="configElement">
-          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageSize" id="mainImageSizeConfig" (change)="triggerChangeFormatEvent()">
+          <mat-button-toggle-group [(ngModel)]="sharePicSet.sharePics[activeSharePic].mainImageSize" id="mainImageSizeConfig" 
+          (change)="triggerChangeFormatEvent();generalService.syncLocalSharePicSets()">
             <mat-button-toggle value="FULL_HEIGHT">
               <mat-icon>expand</mat-icon>
             </mat-button-toggle>
@@ -96,8 +97,8 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageVerticalPositioning"
-                                   id="mainImageVerticalConfig" (change)="triggerChangeFormatEvent()">
+          <mat-button-toggle-group [(ngModel)]="sharePicSet.sharePics[activeSharePic].mainImageVerticalPositioning"
+                                   id="mainImageVerticalConfig" (change)="triggerChangeFormatEvent();generalService.syncLocalSharePicSets()">
             <mat-button-toggle value="TOP">
               <mat-icon>vertical_align_top</mat-icon>
             </mat-button-toggle>
@@ -109,8 +110,8 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].mainImageHorizontalPositioning"
-                                   id="mainImageHorizontalConfig" (change)="triggerChangeFormatEvent()">
+          <mat-button-toggle-group [(ngModel)]="sharePicSet.sharePics[activeSharePic].mainImageHorizontalPositioning"
+                                   id="mainImageHorizontalConfig" (change)="triggerChangeFormatEvent();generalService.syncLocalSharePicSets()">
             <mat-button-toggle value="LEFT">
               <mat-icon>vertical_align_top</mat-icon>
             </mat-button-toggle>
@@ -122,7 +123,8 @@
             </mat-button-toggle>
           </mat-button-toggle-group>
 
-          <mat-button-toggle-group [(ngModel)]="sharePics[activeSharePic].cropImage" id="mainImageCropConfig" (change)="triggerChangeFormatEvent()">
+          <mat-button-toggle-group [(ngModel)]="sharePicSet.sharePics[activeSharePic].cropImage" id="mainImageCropConfig" 
+          (change)="triggerChangeFormatEvent();generalService.syncLocalSharePicSets()">
             <mat-button-toggle [value]="false">
               <mat-icon>settings_overscan</mat-icon>
             </mat-button-toggle>
@@ -135,7 +137,7 @@
 
       <mat-form-field class="configElement">
         <mat-label>Hintergrundbild</mat-label>
-        <mat-select [(ngModel)]="sharePics[activeSharePic].backgroundImage">
+        <mat-select [(ngModel)]="sharePicSet.sharePics[activeSharePic].backgroundImage" (selectionChange)="generalService.syncLocalSharePicSets()">
           <mat-option value="">-</mat-option>
           <mat-option value="meatfreemonday">Meatfree Monday</mat-option>
           <mat-option value="plasticfree">Plastikfreitag</mat-option>
@@ -145,44 +147,48 @@
 
       <mat-form-field class="configElement" appearance="fill">
         <mat-label>Text</mat-label>
-        <textarea [(ngModel)]="sharePics[activeSharePic].text" matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
-                  cdkAutosizeMaxRows="10"></textarea>
+        <textarea [(ngModel)]="sharePicSet.sharePics[activeSharePic].text" matInput cdkTextareaAutosize cdkAutosizeMinRows="3"
+                  cdkAutosizeMaxRows="10" (change)="generalService.syncLocalSharePicSets()"></textarea>
       </mat-form-field>
       
       <div id="exportConfig" class="configElement">
         <mat-form-field>
           <mat-label>Bildname</mat-label>
-          <input matInput [(ngModel)]="sharePics[activeSharePic].exportName" placeholder="Bildname">
+          <input matInput [(ngModel)]="sharePicSet.sharePics[activeSharePic].exportName" placeholder="Bildname" (change)="generalService.syncLocalSharePicSets()">
         </mat-form-field>
         <button mat-flat-button color="primary" color="accent" id="export" (click)="exportActiveSharePic()">Exportieren</button>
       </div>
     </div>
   </mat-sidenav>
   <mat-sidenav-content>
-    <div id="previews" style="left: -{{activeSharePic*100}}%;">
-      <ng-container *ngFor="let sharepic of sharePics; let i = index">
-        <div class="previewOutlet" style="left: {{i*100}}%;">
-          <app-sharepic-preview #SharePic [sharePic]="sharepic" (grabStatusChange)="grabbing=$event"></app-sharepic-preview>
-        </div>
-      </ng-container>
+    <div id="previews">
+      <div id="previewsGroup" [style.left.%]="-activeSharePic*100">
+        <ng-container *ngFor="let sharepic of sharePicSet.sharePics; let i = index">
+          <div class="previewOutlet">
+            <app-sharepic-preview #SharePic [sharePic]="sharepic" (grabStatusChange)="grabbing=$event"></app-sharepic-preview>
+          </div>
+        </ng-container>
+      </div>
     </div>
-    <button mat-icon-button color="" id="buttonPrevious" [disabled]="activeSharePic==0"
-            (click)="activeSharePic=activeSharePic-1">
-      <mat-icon>chevron_left</mat-icon>
-    </button>
-    <button mat-icon-button color="" id="buttonDelete" (click)="deleteSharePic()">
-      <mat-icon>clear</mat-icon>
-    </button>
-    <button mat-icon-button color="" id="buttonNext" *ngIf="activeSharePic<sharePics.length-1"
-            (click)="activeSharePic=activeSharePic+1">
-      <mat-icon>chevron_right</mat-icon>
-    </button>
-    <button mat-icon-button color="primary" id="buttonNew" *ngIf="activeSharePic==sharePics.length-1"
-            (click)="newSharePic()">
-      <mat-icon>add</mat-icon>
-    </button>
+    <div id="controlButtons">
+      <button mat-icon-button id="buttonPrevious" [disabled]="activeSharePic==0"
+              (click)="activeSharePic=activeSharePic-1">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button mat-icon-button id="buttonDelete" (click)="deleteSharePic()">
+        <mat-icon>clear</mat-icon>
+      </button>
+      <button mat-icon-button id="buttonNext" *ngIf="activeSharePic<sharePicSet.sharePics.length-1"
+              (click)="activeSharePic=activeSharePic+1">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" id="buttonNew" *ngIf="activeSharePic==sharePicSet.sharePics.length-1"
+              (click)="newSharePic()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </div>
     <div id="dotOverview">
-      <ng-container *ngFor="let sharepic of sharePics; let i = index">
+      <ng-container *ngFor="let sharepic of sharePicSet.sharePics; let i = index">
         <div class="dot" [class.active]="i==activeSharePic" (click)="activeSharePic=i">
           <div></div>
         </div>

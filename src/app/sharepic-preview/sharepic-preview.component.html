@@ -1,9 +1,10 @@
-<div class="container" #container class="mat-elevation-z2 {{sharePic.platform}}">
+<div class="previewContainer mat-elevation-z2" [style.width.px]="scaleFactor*1200" [style.height.px]="scaleFactor*imageHeight" [class]="sharePic.platform">
   <div class="preview" #preview [class.saving]="saving" style="transform: scale({{scaleFactor}});">
     <img src="/assets/{{sharePic.backgroundImage}}.jpg" *ngIf="sharePic.backgroundImage">
     <div class="mainImageContainer" [class.cropped]="sharePic.cropImage">
-      <img class="mainImage" src="{{sharePic.mainImage}}" #mainImage (mousedown)="activateDragging($event, mainImage)"
-           (wheel)="zoom($event)" style="height: {{sharePic.zoomFactor*mainImage.naturalHeight}}px;">
+      <img class="mainImage" [src]="sharePic.mainImage" #mainImage (mousedown)="activateDragging($event, mainImage)"
+            (wheel)="zoom($event)" [style.height.px]="sharePic.mainImageHeight"
+            [style.left.px]="sharePic.imagePosition.x" [style.top.px]="sharePic.imagePosition.y">
     </div>
     <mat-list class="text" [class.noBackground]="!sharePic.backgroundImage" [class.noTitle]="!sharePic.title">
       <ng-container *ngFor="let row of text2html(sharePic.text)">
@@ -20,14 +21,14 @@
         </span>
       </div>
       <div class="subtitle" *ngIf="sharePic.subtitle" [class.inverted]="sharePic.subtitleColor=='green'"
-           [class.firstTitle]="!sharePic.title">
+            [class.firstTitle]="!sharePic.title">
         <span>
           {{sharePic.subtitle}}
         </span>
       </div>
     </div>
     <div class="copyright" [class.inverted]="sharePic.copyrightColor[0]=='w'"
-         [class.shadow]="sharePic.copyrightColor=='white_with_shadow'">
+          [class.shadow]="sharePic.copyrightColor=='white_with_shadow'">
       {{sharePic.copyright}}
     </div>
     <img class="logo {{sharePic.logoScheme[1]}}" src="/assets/logo_gpka_{{sharePic.logoScheme[0]}}.png">

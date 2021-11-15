@@ -1,7 +1,8 @@
-import {Component, ElementRef, HostBinding, HostListener, Input, Output, OnInit, ViewChild, EventEmitter} from '@angular/core';
+import {Component, ElementRef, HostBinding, HostListener, Input, Output, OnInit, ViewChild, EventEmitter, AfterViewInit} from '@angular/core';
 import {SharePic} from "../../datatypes/SharePic";
 import html2canvas from "html2canvas";
 import {ListItem} from "../../datatypes/ListItem";
+import { GeneralService } from '../general.service';
 
 @Component({
   selector: 'app-sharepic-preview',
@@ -16,19 +17,21 @@ export class SharepicPreviewComponent implements OnInit {
   saving = false
   scaleFactor = 1
   @ViewChild('mainImage') mainImage!: ElementRef<HTMLImageElement>
-  @ViewChild('container') container!: ElementRef<HTMLDivElement>
+  @ViewChild('previewContainer') previewContainer!: ElementRef<HTMLDivElement>
   @ViewChild('preview') preview!: ElementRef<HTMLDivElement>
   dragStartPosition = {x: 0, y: 0}
+  imageStartPosition = {x: 0, y: 0}
   imageHeight = 1200
   exporting = false
 
   @HostBinding('class.grabbing') draggingElement: HTMLImageElement|null = null
 
-  constructor() { }
+  constructor(private generalService: GeneralService,
+              private hostRef:ElementRef) { }
 
   ngOnInit() {
     setTimeout(() => {
-      this.calcScaleFactor()
+      this.changeFormat()
     })
   }
 
@@ -44,55 +47,65 @@ export class SharepicPreviewComponent implements OnInit {
       this.imageHeight = this.sharePic.cropImage ? 170 : 600
     }
 
+    if (this.sharePic.mainImage) {
+      this.resetImage()
+    }
+
     setTimeout(() => {
       this.calcScaleFactor()
-      this.resetImage()
     })
   }
 
   calcScaleFactor() {
-    // @ts-ignore
-    this.scaleFactor = this.container.nativeElement.offsetWidth / 1200
+    this.scaleFactor = Math.min(
+      this.hostRef.nativeElement.offsetWidth / 1200,
+      this.hostRef.nativeElement.offsetHeight / this.imageHeight,
+      1
+    )
   }
 
   resetImage() {
-    this.resetImageSize(this.mainImage.nativeElement)
-    this.resetHorizontalPositioning(this.mainImage.nativeElement)
-    this.resetVerticalPositioning(this.mainImage.nativeElement)
+    this.resetImageSize()
+    this.resetHorizontalPositioning()
+    this.resetVerticalPositioning()
   }
 
-  resetImageSize(img: HTMLImageElement) {
+  resetImageSize() {
+    const img = this.mainImage.nativeElement
+
     if (this.sharePic.mainImageSize == "FULL_HEIGHT") {
-      this.sharePic.zoomFactor = this.imageHeight / img.naturalHeight
+      this.sharePic.mainImageHeight = this.imageHeight
     } else if (this.sharePic.mainImageSize == "FULL_WIDTH") {
-      this.sharePic.zoomFactor = 1200 / img.naturalWidth
+      this.sharePic.mainImageHeight = 1200 / img.naturalWidth * img.naturalHeight
     }
   }
 
-  resetHorizontalPositioning(img: HTMLImageElement) {
+  resetHorizontalPositioning() {
+    const img = this.mainImage.nativeElement
+
     switch (this.sharePic.mainImageHorizontalPositioning) {
       case "LEFT":
-        img.style.left = "0"
+        this.sharePic.imagePosition.x = 0
         break
       case "CENTER":
-        img.style.left = (1200-this.sharePic.zoomFactor*img.naturalWidth)/2 + "px"
+        this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)/2
         break
       case "RIGHT":
-        img.style.left = (1200-this.sharePic.zoomFactor*img.naturalWidth) + "px"
+        this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)
         break
     }
   }
 
-  resetVerticalPositioning(img: HTMLImageElement) {
+  resetVerticalPositioning() {
     switch (this.sharePic.mainImageVerticalPositioning) {
       case "TOP":
-        img.style.top = "0"
+        this.sharePic.imagePosition.y = 0
         break
       case "CENTER":
-        img.style.top = (this.imageHeight-this.sharePic.zoomFactor*img.naturalHeight)/2 + "px"
+        this.sharePic.imagePosition.y = (this.imageHeight-this.sharePic.mainImageHeight)/2
         break
       case "BOTTOM":
-        img.style.top = (this.imageHeight-this.sharePic.zoomFactor*img.naturalHeight) + "px"
+        this.sharePic.imagePosition.y = (this.imageHeight-this.sharePic.mainImageHeight)
         break
     }
   }
@@ -103,8 +116,8 @@ export class SharepicPreviewComponent implements OnInit {
     this.draggingElement = imageElement
     this.dragStartPosition.x = event.clientX
     this.dragStartPosition.y = event.clientY
-    this.sharePic.imagePosition.x = parseFloat(this.draggingElement.style.left)
-    this.sharePic.imagePosition.y = parseFloat(this.draggingElement.style.top)
+    this.imageStartPosition.x = this.sharePic.imagePosition.x
+    this.imageStartPosition.y = this.sharePic.imagePosition.y
 
     event.preventDefault()
   }
@@ -114,9 +127,8 @@ export class SharepicPreviewComponent implements OnInit {
     if (this.draggingElement !== null) {
       const img = this.draggingElement
 
-      img.style.left = this.sharePic.imagePosition.x + (event.clientX - this.dragStartPosition.x) / this.scaleFactor + "px"
-      img.style.top = this.sharePic.imagePosition.y + (event.clientY - this.dragStartPosition.y) / this.scaleFactor + "px"
-
+      this.sharePic.imagePosition.x = (event.clientX-this.dragStartPosition.x) / this.scaleFactor + this.imageStartPosition.x
+      this.sharePic.imagePosition.y = (event.clientY-this.dragStartPosition.y) / this.scaleFactor + this.imageStartPosition.y
       this.snapHorizontal()
       this.snapVertical()
 
@@ -128,9 +140,9 @@ export class SharepicPreviewComponent implements OnInit {
   deactivateDragging(event: MouseEvent) {
     this.grabStatusChange.emit(false)
 
-    this.sharePic.imagePosition.x += this.sharePic.imagePosition.x + (event.clientX - this.dragStartPosition.x) / this.scaleFactor
-    this.sharePic.imagePosition.y += this.sharePic.imagePosition.y + (event.clientY - this.dragStartPosition.y) / this.scaleFactor
     this.draggingElement = null
+
+    this.generalService.syncLocalSharePicSets()
   }
 
   zoom(event: WheelEvent) {
@@ -138,38 +150,40 @@ export class SharepicPreviewComponent implements OnInit {
 
     const changeFactor = event.deltaY < 0 ? 1.05 : 1/1.05
 
-    this.sharePic.zoomFactor *= changeFactor
+    this.sharePic.mainImageHeight *= changeFactor
 
-    img.style.left = parseFloat(img.style.left) - (changeFactor - 1) * event.offsetX + "px"
-    img.style.top = parseFloat(img.style.top) - (changeFactor - 1) * event.offsetY + "px"
+    this.sharePic.imagePosition.x -= (changeFactor - 1) * event.offsetX
+    this.sharePic.imagePosition.y -= (changeFactor - 1) * event.offsetY
 
     // Snapping in zoom direction
-    if (Math.abs(this.imageHeight - this.sharePic.zoomFactor*img.naturalHeight) < 1) {
+    if (Math.abs(this.imageHeight - this.sharePic.mainImageHeight) < 1) {
       this.sharePic.mainImageSize = "FULL_HEIGHT"
-      this.sharePic.zoomFactor = this.imageHeight/img.naturalHeight
-    } else if (Math.abs(1200 - this.sharePic.zoomFactor*img.naturalWidth) < 1) {
+      this.sharePic.mainImageHeight = this.imageHeight
+    } else if (Math.abs(1200 - this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth) < 1) {
       this.sharePic.mainImageSize = "FULL_WIDTH"
-      this.sharePic.zoomFactor = 1200/img.naturalWidth
+      this.sharePic.mainImageHeight = 1200/img.naturalWidth*img.naturalHeight
     } else {
       this.sharePic.mainImageSize = "INDIVIDUAL"
     }
 
     this.snapHorizontal(1)
     this.snapVertical(1)
+
+    this.generalService.syncLocalSharePicSets()
   }
 
   snapHorizontal(tolerance: number = 20) {
     const img = this.mainImage.nativeElement
 
     // Snapping in horizontal direction
-    if (Math.abs(parseFloat(img.style.left)) < tolerance) {
-      img.style.left = "0"
+    if (Math.abs(this.sharePic.imagePosition.x) < tolerance) {
+      this.sharePic.imagePosition.x = 0
       this.sharePic.mainImageHorizontalPositioning = "LEFT"
-    } else if (Math.abs(parseFloat(img.style.left) - (1200-this.sharePic.zoomFactor*img.naturalWidth)/2) < tolerance) {
-      img.style.left = (1200-this.sharePic.zoomFactor*img.naturalWidth)/2 + "px"
+    } else if (Math.abs(this.sharePic.imagePosition.x - (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)/2) < tolerance) {
+      this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)/2
       this.sharePic.mainImageHorizontalPositioning = "CENTER"
-    } else if (Math.abs(parseFloat(img.style.left) - (1200-this.sharePic.zoomFactor*img.naturalWidth)) < tolerance) {
-      img.style.left = (1200-this.sharePic.zoomFactor*img.naturalWidth) + "px"
+    } else if (Math.abs(this.sharePic.imagePosition.x - (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)) < tolerance) {
+      this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)
       this.sharePic.mainImageHorizontalPositioning = "RIGHT"
     } else {
       this.sharePic.mainImageHorizontalPositioning = "INDIVIDUAL"
@@ -180,14 +194,14 @@ export class SharepicPreviewComponent implements OnInit {
     const img = this.mainImage.nativeElement
 
     // Snapping in vertical direction
-    if (Math.abs(parseFloat(img.style.top)) < tolerance) {
-      img.style.top = "0"
+    if (Math.abs(this.sharePic.imagePosition.y) < tolerance) {
+      this.sharePic.imagePosition.y = 0
       this.sharePic.mainImageVerticalPositioning = "TOP"
-    } else if (Math.abs(parseFloat(img.style.top) - (this.imageHeight - this.sharePic.zoomFactor * img.naturalHeight) / 2) < tolerance) {
-      img.style.top = (this.imageHeight - this.sharePic.zoomFactor * img.naturalHeight) / 2 + "px"
+    } else if (Math.abs(this.sharePic.imagePosition.y - (this.imageHeight - this.sharePic.mainImageHeight) / 2) < tolerance) {
+      this.sharePic.imagePosition.y = (this.imageHeight - this.sharePic.mainImageHeight) / 2
       this.sharePic.mainImageVerticalPositioning = "CENTER"
-    } else if (Math.abs(parseFloat(img.style.top) - (this.imageHeight - this.sharePic.zoomFactor * img.naturalHeight)) < tolerance) {
-      img.style.top = (this.imageHeight - this.sharePic.zoomFactor * img.naturalHeight) + "px"
+    } else if (Math.abs(this.sharePic.imagePosition.y - (this.imageHeight - this.sharePic.mainImageHeight)) < tolerance) {
+      this.sharePic.imagePosition.y = (this.imageHeight - this.sharePic.mainImageHeight)
       this.sharePic.mainImageVerticalPositioning = "BOTTOM"
     } else {
       this.sharePic.mainImageVerticalPositioning = "INDIVIDUAL"

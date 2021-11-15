@@ -4,6 +4,8 @@ import {ListItem} from "../../datatypes/ListItem";
 import {SharePic} from "../../datatypes/SharePic";
 import { GeneralService } from '../general.service';
 import { SharepicPreviewComponent } from '../sharepic-preview/sharepic-preview.component';
+import { ActivatedRoute } from '@angular/router'
+import { SharePicSet } from 'src/datatypes/SharePicSet';
 
 @Component({
   selector: 'app-editor',
@@ -12,7 +14,7 @@ import { SharepicPreviewComponent } from '../sharepic-preview/sharepic-preview.c
 })
 export class EditorComponent implements OnInit {
   smallScreen = window.innerWidth < 800
-  sharePics: SharePic[] = []
+  sharePicSet!: SharePicSet
   activeSharePic: number = 0
   fileDragging = false
   exporting = false
@@ -20,11 +22,26 @@ export class EditorComponent implements OnInit {
 
   @HostBinding('class.grabbing') grabbing: boolean = false
 
-  constructor(public generalService: GeneralService) { }
-
-  ngOnInit() {
-    this.sharePics.push(new SharePic())
+  constructor(public generalService: GeneralService,
+    private route: ActivatedRoute) {
+    
+    const sharePicSetId = this.route.snapshot.paramMap.get('id')
+    // @ts-ignore
+    const sharePicSet = this.generalService.getLocalSharePicSetById(sharePicSetId)
+    if (sharePicSet !== null) {
+      this.sharePicSet = sharePicSet
+      console.log(this.sharePicSet)
+      //setTimeout(() => this.triggerChangeFormatEvent())
+    } else {
+      // @ts-ignore
+      this.sharePicSet = new SharePicSet(sharePicSetId)
+      this.sharePicSet.sharePics.push(new SharePic())
+      this.generalService.localSharePicSets.push(this.sharePicSet)
+      this.generalService.syncLocalSharePicSets()
+    }
   }
+
+  ngOnInit() { }
 
   @HostListener('window:resize', ['$event'])
   onResize(even:any) {
@@ -62,8 +79,8 @@ export class EditorComponent implements OnInit {
   }
 
   triggerChangeFormatEvent() {
-    this.sharePicReferences.toArray().forEach((sharepicPrevieew: SharepicPreviewComponent) => {
-      sharepicPrevieew.changeFormat()
+    this.sharePicReferences.toArray().forEach((sharepicPreview: SharepicPreviewComponent) => {
+      sharepicPreview.changeFormat()
     })
   }
 
@@ -78,8 +95,9 @@ export class EditorComponent implements OnInit {
 
     reader.addEventListener("load", () => {
       if (reader.result !== null) {
-        this.sharePics[this.activeSharePic].mainImage = reader.result.toString()
+        this.sharePicSet.sharePics[this.activeSharePic].mainImage = reader.result.toString()
         this.triggerChangeFormatEvent()
+        this.generalService.syncLocalSharePicSets()
       }
     }, false)
 
@@ -89,17 +107,21 @@ export class EditorComponent implements OnInit {
   }
 
   newSharePic() {
-    this.sharePics.push(new SharePic())
+    this.sharePicSet.sharePics.push(new SharePic())
     this.activeSharePic++
   }
 
   deleteSharePic() {
-    this.sharePics.splice(this.activeSharePic, 1)
+    // if sharepic unmodified or confirmation is given
+    if (JSON.stringify(this.sharePicSet.sharePics[this.activeSharePic]) == JSON.stringify(new SharePic())
+          || confirm("Willst du dieses Bild wirklich löschen?")) {
+      this.sharePicSet.sharePics.splice(this.activeSharePic, 1)
 
-    if (this.sharePics.length == 0) {
-      this.sharePics.push(new SharePic())
-    } else if (this.activeSharePic >= this.sharePics.length) {
-      this.activeSharePic = this.sharePics.length - 1
+      if (this.sharePicSet.sharePics.length == 0) {
+        this.sharePicSet.sharePics.push(new SharePic())
+      } else if (this.activeSharePic >= this.sharePicSet.sharePics.length) {
+        this.activeSharePic = this.sharePicSet.sharePics.length - 1
+      }
     }
   }
 
@@ -116,7 +138,7 @@ export class EditorComponent implements OnInit {
   createImage() {
     html2canvas(this.sharePicReferences.toArray()[this.activeSharePic].preview.nativeElement).then(canvas => {
       const link = document.createElement("a")
-      link.setAttribute('download', this.sharePics[this.activeSharePic].exportName + '.jpg')
+      link.setAttribute('download', this.sharePicSet.sharePics[this.activeSharePic].exportName + '.jpg')
       link.setAttribute('href', canvas.toDataURL("image/jpeg", 0.8).replace("image/jpeg",
         "image/octet-stream"))
       link.click()

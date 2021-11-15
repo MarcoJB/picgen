@@ -8,7 +8,7 @@ export class SharePic {
   logoScheme = "wg"
   mainImage: string = ""
   mainImageSize = "FULL_HEIGHT"
-  zoomFactor = 1
+  mainImageHeight = 1200
   mainImageHorizontalPositioning = "CENTER"
   mainImageVerticalPositioning = "CENTER"
   imagePosition = {x: 0, y: 0}
@@ -17,6 +17,5 @@ export class SharePic {
   text = ""
   exportName = "SharePic"
 
-  constructor() {
-  }
+  constructor() { }
 }
