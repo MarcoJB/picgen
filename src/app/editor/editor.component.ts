@@ -4,7 +4,7 @@ import {ListItem} from "../../datatypes/ListItem";
 import {SharePic} from "../../datatypes/SharePic";
 import { GeneralService } from '../general.service';
 import { SharepicPreviewComponent } from '../sharepic-preview/sharepic-preview.component';
-import { ActivatedRoute } from '@angular/router'
+import { Router, ActivatedRoute } from '@angular/router'
 import { SharePicSet } from 'src/datatypes/SharePicSet';
 
 @Component({
@@ -23,21 +23,25 @@ export class EditorComponent implements OnInit {
   @HostBinding('class.grabbing') grabbing: boolean = false
 
   constructor(public generalService: GeneralService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private router: Router) {
     
     const sharePicSetId = this.route.snapshot.paramMap.get('id')
     // @ts-ignore
     const sharePicSet = this.generalService.getLocalSharePicSetById(sharePicSetId)
     if (sharePicSet !== null) {
       this.sharePicSet = sharePicSet
-      console.log(this.sharePicSet)
-      //setTimeout(() => this.triggerChangeFormatEvent())
     } else {
       // @ts-ignore
       this.sharePicSet = new SharePicSet(sharePicSetId)
       this.sharePicSet.sharePics.push(new SharePic())
       this.generalService.localSharePicSets.push(this.sharePicSet)
       this.generalService.syncLocalSharePicSets()
+    }
+
+    const pageParam = parseInt(this.route.snapshot.paramMap.get('page')||"0")
+    if (!isNaN(pageParam) && pageParam <= this.sharePicSet.sharePics.length) {
+      this.switchActiveSharePic(pageParam-1, false)
     }
   }
 
@@ -78,6 +82,22 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  switchActiveSharePic(activeSharePic: number, relative: boolean = true) {
+    if (relative) {
+      activeSharePic += this.activeSharePic
+    }
+
+    if (activeSharePic < 0) activeSharePic = 0
+    else if (activeSharePic >= this.sharePicSet.sharePics.length) activeSharePic = this.sharePicSet.sharePics.length-1
+
+    this.activeSharePic = activeSharePic
+    if (this.activeSharePic == 0) {
+      this.router.navigate([this.sharePicSet.id]);
+    } else {
+      this.router.navigate([this.sharePicSet.id, activeSharePic+1]);
+    }
+  }
+
   triggerChangeFormatEvent() {
     this.sharePicReferences.toArray().forEach((sharepicPreview: SharepicPreviewComponent) => {
       sharepicPreview.changeFormat()
@@ -90,7 +110,6 @@ export class EditorComponent implements OnInit {
   }
 
   loadImage(image: File) {
-    // this.mainImageFileName = image.name
     const reader = new FileReader()
 
     reader.addEventListener("load", () => {
@@ -108,7 +127,7 @@ export class EditorComponent implements OnInit {
 
   newSharePic() {
     this.sharePicSet.sharePics.push(new SharePic())
-    this.activeSharePic++
+    this.switchActiveSharePic(+1)
   }
 
   deleteSharePic() {
@@ -120,7 +139,7 @@ export class EditorComponent implements OnInit {
       if (this.sharePicSet.sharePics.length == 0) {
         this.sharePicSet.sharePics.push(new SharePic())
       } else if (this.activeSharePic >= this.sharePicSet.sharePics.length) {
-        this.activeSharePic = this.sharePicSet.sharePics.length - 1
+        this.switchActiveSharePic(-1)
       }
     }
   }

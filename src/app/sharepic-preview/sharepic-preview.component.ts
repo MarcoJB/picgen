@@ -11,8 +11,9 @@ import { GeneralService } from '../general.service';
 })
 export class SharepicPreviewComponent implements OnInit {
   @Input() sharePic!: SharePic
-  @Input() sharePicIndex!: number
-  @Output() grabStatusChange = new EventEmitter<boolean>();
+  @Input() noElevation: boolean = false
+  @Input() outline: boolean = false
+  @Output() grabStatusChange = new EventEmitter<boolean>()
 
   saving = false
   scaleFactor = 1
@@ -136,7 +137,7 @@ export class SharepicPreviewComponent implements OnInit {
     }
   }
 
-  @HostListener('window:mouseup', ['$event'])
+  @HostListener('mouseup', ['$event'])
   deactivateDragging(event: MouseEvent) {
     this.grabStatusChange.emit(false)
 

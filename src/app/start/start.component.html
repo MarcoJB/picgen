@@ -1,0 +1,21 @@
+<mat-toolbar color="primary">
+  <span>Sharepic Generator</span>
+  <button id="darkModeButton" mat-icon-button (click)="generalService.darkMode=!generalService.darkMode">
+    <mat-icon>bedtime</mat-icon>
+  </button>
+</mat-toolbar>
+<div id="localSharePicSets">
+  <ng-container class="localSharePicSetOuter" *ngFor="let localSharePicSet of generalService.localSharePicSets">
+    <a class="localSharePicSetLink" [routerLink]="'/'+localSharePicSet.id" [style.grid-column]="'min(2, '+localSharePicSet.sharePics.length+') span'">
+      <mat-card class="localSharePicSet">
+        <div class="localSharePics">
+          <div class="localSharePic" *ngFor="let localSharePic of localSharePicSet.sharePics | slice:0:2, let i = index">
+            <app-sharepic-preview [sharePic]="localSharePic" [noElevation]="true" [outline]="true"></app-sharepic-preview>
+          </div>
+        </div>
+        <button mat-icon-button (click)="generalService.deleteLocalSharePicSet($event, localSharePicSet)"><mat-icon>clear</mat-icon></button>
+      </mat-card>
+    </a>
+  </ng-container>
+</div>
+<a mat-fab color="primary" id="newSharePicSet" [routerLink]="'/'+newSharePicSetId"><mat-icon>add</mat-icon></a>

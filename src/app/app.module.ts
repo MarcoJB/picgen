@@ -20,12 +20,15 @@ import {MatListModule} from "@angular/material/list";
 import {SharepicPreviewComponent} from './sharepic-preview/sharepic-preview.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {StartComponent} from './start/start.component';
+import {MatCardModule} from '@angular/material/card';
 
 @NgModule({
   declarations: [
     AppComponent,
     EditorComponent,
-    SharepicPreviewComponent
+    SharepicPreviewComponent,
+    StartComponent
   ],
     imports: [
       BrowserModule,
@@ -44,7 +47,8 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
       MatProgressSpinnerModule,
       MatListModule,
       MatMenuModule,
-      MatAutocompleteModule
+      MatAutocompleteModule,
+      MatCardModule
     ],
   providers: [],
   bootstrap: [AppComponent]

@@ -2,7 +2,7 @@
   <button id="sidenavButton" mat-icon-button (click)="sidenav.toggle()" *ngIf="smallScreen">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>Sharepic Generator</span>
+  <a routerLink="/">Sharepic Generator</a>
   <!--<button mat-icon-button [matMenuTriggerFor]="menu">
     <mat-icon>more_vert</mat-icon>
   </button>
@@ -172,14 +172,14 @@
     </div>
     <div id="controlButtons">
       <button mat-icon-button id="buttonPrevious" [disabled]="activeSharePic==0"
-              (click)="activeSharePic=activeSharePic-1">
+              (click)="switchActiveSharePic(-1)">
         <mat-icon>chevron_left</mat-icon>
       </button>
       <button mat-icon-button id="buttonDelete" (click)="deleteSharePic()">
         <mat-icon>clear</mat-icon>
       </button>
       <button mat-icon-button id="buttonNext" *ngIf="activeSharePic<sharePicSet.sharePics.length-1"
-              (click)="activeSharePic=activeSharePic+1">
+              (click)="switchActiveSharePic(1)">
         <mat-icon>chevron_right</mat-icon>
       </button>
       <button mat-icon-button color="primary" id="buttonNew" *ngIf="activeSharePic==sharePicSet.sharePics.length-1"

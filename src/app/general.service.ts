@@ -55,4 +55,14 @@ export class GeneralService {
   syncLocalSharePicSets() {
     localStorage.setItem("localSharePicSets", JSON.stringify(this.localSharePicSets))
   }
+
+  deleteLocalSharePicSet(event: MouseEvent, localSharePicSet: SharePicSet) {
+    if (confirm("Dieses Sharepic Set wirklich löschen?")) {
+      this.localSharePicSets.splice(this.localSharePicSets.indexOf(localSharePicSet), 1)
+      this.syncLocalSharePicSets()
+    }
+
+    event.preventDefault()
+    event.stopPropagation()
+  }
 }
