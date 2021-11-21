@@ -1,4 +1,4 @@
-<div class="previewContainer" [class.mat-elevation-z2]="!noElevation" [class.outline]="outline" [style.width.px]="scaleFactor*1200" [style.height.px]="scaleFactor*imageHeight" [class]="sharePic.platform">
+<div class="previewContainer" [class.mat-elevation-z2]="!noElevation" [class.outline]="outline" [style.width.px]="scaleFactor*1200" [style.height.px]="scaleFactor*sharePicHeight" [class]="sharePic.platform">
   <div class="preview" #preview [class.saving]="saving" style="transform: scale({{scaleFactor}});">
     <img src="/assets/{{sharePic.backgroundImage}}.jpg" *ngIf="sharePic.backgroundImage">
     <div class="mainImageContainer" [class.cropped]="sharePic.cropImage">

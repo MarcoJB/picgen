@@ -22,6 +22,7 @@ export class SharepicPreviewComponent implements OnInit {
   @ViewChild('preview') preview!: ElementRef<HTMLDivElement>
   dragStartPosition = {x: 0, y: 0}
   imageStartPosition = {x: 0, y: 0}
+  sharePicHeight = 1200
   imageHeight = 1200
   exporting = false
 
@@ -42,11 +43,8 @@ export class SharepicPreviewComponent implements OnInit {
   }
 
   changeFormat() {
-    if (this.sharePic.platform == "INSTAGRAM") {
-      this.imageHeight = this.sharePic.cropImage ? 770 : 1200
-    } else {
-      this.imageHeight = this.sharePic.cropImage ? 170 : 600
-    }
+    this.sharePicHeight = this.sharePic.platform == "INSTAGRAM" ? 1200 : 600
+    this.imageHeight = this.sharePicHeight - (this.sharePic.cropImage ? 430 : 0)
 
     if (this.sharePic.mainImage) {
       this.resetImage()
@@ -60,7 +58,7 @@ export class SharepicPreviewComponent implements OnInit {
   calcScaleFactor() {
     this.scaleFactor = Math.min(
       this.hostRef.nativeElement.offsetWidth / 1200,
-      this.hostRef.nativeElement.offsetHeight / this.imageHeight,
+      this.hostRef.nativeElement.offsetHeight / this.sharePicHeight,
       1
     )
   }
