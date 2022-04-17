@@ -22,6 +22,7 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {StartComponent} from './start/start.component';
 import {MatCardModule} from '@angular/material/card';
+import {MatSliderModule} from '@angular/material/slider';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import {MatCardModule} from '@angular/material/card';
       MatListModule,
       MatMenuModule,
       MatAutocompleteModule,
-      MatCardModule
+      MatCardModule,
+      MatSliderModule
     ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,7 +1,5 @@
-import { identifierModuleUrl, sharedStylesheetJitUrl } from "@angular/compiler";
 import { Injectable } from "@angular/core";
-import { SharePic } from "src/datatypes/SharePic";
-import { SharePicSet } from "src/datatypes/SharePicSet";
+import { SharePicSet } from "src/app/datatypes/SharePicSet";
 import { deserializeArray } from 'class-transformer';
 
 @Injectable({
@@ -19,6 +17,7 @@ export class GeneralService {
   }
 
   localSharePicSets: SharePicSet[]
+  choosingBalanceColor: boolean = false
 
   constructor() {
     if (localStorage.getItem("darkMode")) {

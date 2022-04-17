@@ -1,11 +1,10 @@
 import {Component, ElementRef, HostBinding, HostListener, OnInit, ViewChildren, QueryList} from '@angular/core';
 import html2canvas from "html2canvas";
-import {ListItem} from "../../datatypes/ListItem";
-import {SharePic} from "../../datatypes/SharePic";
+import {SharePic} from "../datatypes/SharePic";
 import { GeneralService } from '../general.service';
 import { SharepicPreviewComponent } from '../sharepic-preview/sharepic-preview.component';
 import { Router, ActivatedRoute } from '@angular/router'
-import { SharePicSet } from 'src/datatypes/SharePicSet';
+import { SharePicSet } from 'src/app/datatypes/SharePicSet';
 
 @Component({
   selector: 'app-editor',
@@ -26,7 +25,6 @@ export class EditorComponent implements OnInit {
   constructor(public generalService: GeneralService,
     private route: ActivatedRoute,
     private router: Router) {
-    
     const sharePicSetId = this.route.snapshot.paramMap.get('id')
     // @ts-ignore
     const sharePicSet = this.generalService.getLocalSharePicSetById(sharePicSetId)
@@ -116,8 +114,7 @@ export class EditorComponent implements OnInit {
     reader.addEventListener("load", () => {
       if (reader.result !== null) {
         this.sharePicSet.sharePics[this.activeSharePic].mainImage = reader.result.toString()
-        this.triggerChangeFormatEvent()
-        this.generalService.syncLocalSharePicSets()
+        this.sharePicReferences.toArray()[this.activeSharePic].image.src = this.sharePicSet.sharePics[this.activeSharePic].mainImage
       }
     }, false)
 
@@ -129,6 +126,10 @@ export class EditorComponent implements OnInit {
   newSharePic() {
     this.sharePicSet.sharePics.push(new SharePic())
     this.switchActiveSharePic(+1)
+  }
+
+  applyFilters() {
+    this.sharePicReferences.toArray()[this.activeSharePic].applyFilters()
   }
 
   deleteSharePic() {
@@ -164,5 +165,9 @@ export class EditorComponent implements OnInit {
       link.click()
       this.exporting = false;
     });
+  }
+
+  formatLabel(value: number) {
+    return Math.round(value*value*100)/100;
   }
 }

@@ -198,6 +198,44 @@
         </div>
       </ng-container>
     </div>
+    <div id="filters">
+      Helligkeit
+      <mat-slider thumbLabel [value]="sharePicSet.sharePics[activeSharePic].filterBrightness" min="-100" max="100" tickInterval="50" 
+      (input)="sharePicSet.sharePics[activeSharePic].filterBrightness=$event.value||0;applyFilters()" 
+      [disabled]="!sharePicSet.sharePics[activeSharePic].mainImage"></mat-slider>
+
+      Kontrast
+      <mat-slider thumbLabel [value]="sharePicSet.sharePics[activeSharePic].filterContrast" min="-100" max="100" tickInterval="50" 
+      (input)="sharePicSet.sharePics[activeSharePic].filterContrast=$event.value||0;applyFilters()" 
+      [disabled]="!sharePicSet.sharePics[activeSharePic].mainImage"></mat-slider>
+
+      Sättigung
+      <mat-slider thumbLabel [value]="sharePicSet.sharePics[activeSharePic].filterSaturation" min="-100" max="100" tickInterval="50" 
+      (input)="sharePicSet.sharePics[activeSharePic].filterSaturation=$event.value||0;applyFilters()" 
+      [disabled]="!sharePicSet.sharePics[activeSharePic].mainImage"></mat-slider>
+
+      Schwarzwert
+      <mat-slider thumbLabel [value]="sharePicSet.sharePics[activeSharePic].filterBlack" min="0" max="100" tickInterval="25"
+      (input)="sharePicSet.sharePics[activeSharePic].filterBlack=$event.value||0;applyFilters()" 
+      [disabled]="!sharePicSet.sharePics[activeSharePic].mainImage"></mat-slider>
+
+      Weißwert
+      <mat-slider thumbLabel [value]="sharePicSet.sharePics[activeSharePic].filterWhite" min="0" max="100" tickInterval="25"
+      (input)="sharePicSet.sharePics[activeSharePic].filterWhite=$event.value||0;applyFilters()" 
+      [disabled]="!sharePicSet.sharePics[activeSharePic].mainImage"></mat-slider>
+
+      Neutrales Grau
+      <button mat-icon-button (click)="generalService.choosingBalanceColor=true" 
+      [disabled]="!sharePicSet.sharePics[activeSharePic].mainImage">
+        <mat-icon>colorize</mat-icon>
+      </button>
+
+      <!--Unschärfe
+      <mat-slider thumbLabel [value]="sharePicSet.sharePics[activeSharePic].unsharpMasking" step="0.1" min="0" max="10" tickInterval="25"
+      (input)="sharePicSet.sharePics[activeSharePic].unsharpMasking=$event.value||0;applyFilters()" [displayWith]="formatLabel"
+      [disabled]="!sharePicSet.sharePics[activeSharePic].mainImage"></mat-slider>-->
+
+    </div>
   </div>
 </div>
 

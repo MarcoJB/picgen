@@ -1,11 +1,11 @@
 <div class="previewContainer" [class.mat-elevation-z2]="!noElevation" [class.outline]="outline" [style.width.px]="scaleFactor*1200" [style.height.px]="scaleFactor*sharePicHeight" [class]="sharePic.platform">
-  <div class="preview" #preview [class.saving]="saving" style="transform: scale({{scaleFactor}});">
+  <div class="preview" #preview [class.saving]="saving" [style.transform.scale]="scaleFactor">
     <img src="/assets/{{sharePic.backgroundImage}}.jpg" *ngIf="sharePic.backgroundImage">
     <div class="mainImageContainer" [class.cropped]="sharePic.cropImage">
-      <img class="mainImage" [src]="sharePic.mainImage" #mainImage (mousedown)="activateDragging($event, mainImage)"
+      <canvas class="mainImage" #mainImage (mousedown)="activateDragging($event)" (click)="selectColor($event)"
             (wheel)="zoom($event)" [style.height.px]="sharePic.mainImageHeight"
             (touchstart)="touchStartEnd($event)" (touchend)="touchStartEnd($event)" (touchmove)="touchMove($event)"
-            [style.left.px]="sharePic.imagePosition.x" [style.top.px]="sharePic.imagePosition.y">
+            [style.left.px]="sharePic.imagePosition.x" [style.top.px]="sharePic.imagePosition.y"></canvas>
     </div>
     <mat-list class="text" [class.noBackground]="!sharePic.backgroundImage" [class.noTitle]="!sharePic.title">
       <ng-container *ngFor="let row of text2html(sharePic.text)">
