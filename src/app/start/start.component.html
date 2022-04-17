@@ -6,10 +6,10 @@
 </mat-toolbar>
 <div id="localSharePicSets">
   <ng-container class="localSharePicSetOuter" *ngFor="let localSharePicSet of generalService.localSharePicSets">
-    <a class="localSharePicSetLink" [routerLink]="'/'+localSharePicSet.id" [style.grid-column]="'min(2, '+localSharePicSet.sharePics.length+') span'">
+    <a class="localSharePicSetLink" [routerLink]="'/'+localSharePicSet.id">
       <mat-card class="localSharePicSet">
         <div class="localSharePics">
-          <div class="localSharePic" *ngFor="let localSharePic of localSharePicSet.sharePics | slice:0:2, let i = index">
+          <div class="localSharePic" *ngFor="let localSharePic of localSharePicSet.sharePics | slice:0:4, let i = index">
             <app-sharepic-preview [sharePic]="localSharePic" [noElevation]="true" [outline]="true"></app-sharepic-preview>
           </div>
         </div>
@@ -17,5 +17,14 @@
       </mat-card>
     </a>
   </ng-container>
+  <a class="localSharePicSetLink createSharePicSetLink" [routerLink]="'/'+newSharePicSetId">
+    <mat-card class="localSharePicSet">
+      <div class="localSharePics">
+        <div class="localSharePic">
+          <mat-icon aria-hidden="false" aria-label="Create new SharePic" [inline]="true">add</mat-icon>
+        </div>
+      </div>
+    </mat-card>
+  </a>
 </div>
-<a mat-fab color="primary" id="newSharePicSet" [routerLink]="'/'+newSharePicSetId"><mat-icon>add</mat-icon></a>
+<!--<a mat-fab color="primary" id="newSharePicSet" [routerLink]="'/'+newSharePicSetId"><mat-icon>add</mat-icon></a>-->

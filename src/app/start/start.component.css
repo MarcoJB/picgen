@@ -33,6 +33,13 @@ mat-toolbar span {
     align-self: center;
 }
 
+.localSharePicSetLink {
+    text-decoration: none;
+    aspect-ratio: 1/1;
+    display: grid;
+    place-items: strech;
+}
+
 .localSharePicSet {
     display: flex;
     flex-direction: column;
@@ -51,28 +58,50 @@ mat-toolbar span {
 }
 
 .localSharePics {
-    display: flex;
-    grid-gap: 20px;
-    padding: 0;
+    height: 100%;
+    display: grid;
+    grid-gap: 8%;
+    padding: 8%;
     cursor: pointer;
     overflow: auto;
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
 }
 
 .localSharePic {
     display: flex;
-    width: 100px;
     overflow: hidden;
-    padding: 16px;
     flex-shrink: 0;
     box-sizing: border-box;
     flex-grow: 1;
-    aspect-ratio: 1/1;
+}
+
+.localSharePic:only-child {
+    grid-row: span 2;
+    grid-column: span 2;
 }
 
 app-sharepic-preview {
     width: 100%;
     height: 100%;
     pointer-events: none;
+}
+
+.createSharePicSetLink .localSharePic {
+    display: grid;
+    place-items: center;
+}
+
+.createSharePicSetLink .localSharePic mat-icon {
+    width: auto;
+    line-height: normal;
+    font-size: 60px;
+    opacity: 0.2;
+    transition: opacity 0.2s;
+}
+
+.createSharePicSetLink:hover .localSharePic mat-icon {
+    opacity: 0.6;
 }
 
 #newSharePicSet {
