@@ -4,6 +4,7 @@
     <div class="mainImageContainer" [class.cropped]="sharePic.cropImage">
       <img class="mainImage" [src]="sharePic.mainImage" #mainImage (mousedown)="activateDragging($event, mainImage)"
             (wheel)="zoom($event)" [style.height.px]="sharePic.mainImageHeight"
+            (touchstart)="touchStartEnd($event)" (touchend)="touchStartEnd($event)" (touchmove)="touchMove($event)"
             [style.left.px]="sharePic.imagePosition.x" [style.top.px]="sharePic.imagePosition.y">
     </div>
     <mat-list class="text" [class.noBackground]="!sharePic.backgroundImage" [class.noTitle]="!sharePic.title">
@@ -32,7 +33,7 @@
       {{sharePic.copyright}}
     </div>
     <img class="logo {{sharePic.logoScheme[1]}}" src="/assets/logo_gp_{{sharePic.logoScheme[0]}}.png">
-    <div class="city">
+    <div class="city {{sharePic.logoScheme[0]}}">
       {{sharePic.city}}
     </div>
   </div>

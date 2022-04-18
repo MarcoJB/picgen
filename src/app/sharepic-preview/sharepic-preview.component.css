@@ -190,3 +190,15 @@
   right: 18px;
   font-size: 22px;
 }
+
+.city.g {
+  color: #73be1e;
+}
+
+.city.b {
+  color: black;
+}
+
+.city.w {
+  color: white;
+}

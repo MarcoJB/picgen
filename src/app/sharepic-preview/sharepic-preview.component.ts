@@ -25,6 +25,11 @@ export class SharepicPreviewComponent implements OnInit {
   sharePicHeight = 1200
   imageHeight = 1200
   exporting = false
+  touchStartPosition = {x: 0, y: 0}
+  touchStartOffset = {x: 0, y: 0}
+  touchStartDistance = 0
+  activeTouches = 0
+  imageStartHeight = 0
 
   @HostBinding('class.grabbing') draggingElement: HTMLImageElement|null = null
 
@@ -169,6 +174,92 @@ export class SharepicPreviewComponent implements OnInit {
     this.snapVertical(1)
 
     this.generalService.syncLocalSharePicSets()
+  }
+
+  touchStartEnd(e: TouchEvent) {
+    this.activeTouches = e.touches.length
+    
+    if (e.touches.length == 0) {
+      this.generalService.syncLocalSharePicSets()
+    } else if (e.touches.length == 1) {
+      this.touchStartPosition.x = e.touches[0].clientX
+      this.touchStartPosition.y = e.touches[0].clientY
+    } else if (e.touches.length >= 2) {
+      this.touchStartPosition.x = (e.touches[0].clientX + e.touches[1].clientX) / 2
+      this.touchStartPosition.y = (e.touches[0].clientY + e.touches[1].clientY) / 2
+      this.touchStartDistance = Math.sqrt((e.touches[0].clientX - e.touches[1].clientX)**2 + (e.touches[0].clientY - e.touches[1].clientY)**2)
+    }
+
+    // @ts-ignore
+    const boundingRect = e.target.getBoundingClientRect();
+    this.touchStartOffset.x = this.touchStartPosition.x - boundingRect.x
+    this.touchStartOffset.y = this.touchStartPosition.y - boundingRect.y
+
+    this.imageStartPosition.x = this.sharePic.imagePosition.x
+    this.imageStartPosition.y = this.sharePic.imagePosition.y
+    this.imageStartHeight = this.sharePic.mainImageHeight
+
+    e.preventDefault()
+  }
+
+  touchMove(e: TouchEvent) {
+    if (e.touches.length != this.activeTouches) return
+
+    const img = this.mainImage.nativeElement
+    
+    if (e.touches.length == 1) {
+      const touchPositionX = e.touches[0].clientX
+      const touchPositionY = e.touches[0].clientY
+
+      this.sharePic.imagePosition.x = (touchPositionX-this.touchStartPosition.x) / this.scaleFactor + this.imageStartPosition.x
+      this.sharePic.imagePosition.y = (touchPositionY-this.touchStartPosition.y) / this.scaleFactor + this.imageStartPosition.y
+    } else if (e.touches.length >= 2) {
+      const touchPositionX = (e.touches[0].clientX + e.touches[1].clientX) / 2
+      const touchPositionY = (e.touches[0].clientY + e.touches[1].clientY) / 2
+      const touchDistance = Math.sqrt((e.touches[0].clientX - e.touches[1].clientX)**2 + (e.touches[0].clientY - e.touches[1].clientY)**2)
+
+      this.sharePic.imagePosition.x = (touchPositionX-this.touchStartPosition.x) / this.scaleFactor + this.imageStartPosition.x
+      this.sharePic.imagePosition.y = (touchPositionY-this.touchStartPosition.y) / this.scaleFactor + this.imageStartPosition.y
+  
+      const changeFactor = touchDistance / this.touchStartDistance
+      this.sharePic.imagePosition.x -= (changeFactor - 1) * this.touchStartOffset.x / this.scaleFactor
+      this.sharePic.imagePosition.y -= (changeFactor - 1) * this.touchStartOffset.y / this.scaleFactor
+      this.sharePic.mainImageHeight = this.imageStartHeight * changeFactor
+  
+      // Snapping in zoom direction
+      if (Math.abs(this.imageHeight - this.sharePic.mainImageHeight) < 50) {
+        this.sharePic.mainImageSize = "FULL_HEIGHT"
+        this.sharePic.mainImageHeight = this.imageHeight
+      } else if (Math.abs(1200 - this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth) < 50) {
+        this.sharePic.mainImageSize = "FULL_WIDTH"
+        this.sharePic.mainImageHeight = 1200/img.naturalWidth*img.naturalHeight
+      } else {
+        this.sharePic.mainImageSize = "INDIVIDUAL"
+      }
+    }
+
+    this.snapHorizontal()
+    this.snapVertical()
+
+    e.preventDefault()
+  }
+
+  getOffsetOfTouchEvent(e: TouchEvent) {
+    // @ts-ignore
+    const {x, y, width, height} = e.target.getBoundingClientRect();
+
+    const offsets = [];
+
+    for (const touch of Array.from(e.touches)) {
+      offsets.push({
+        // @ts-ignore
+        x: (touch.clientX-x)/width*e.target.offsetWidth,
+        // @ts-ignore
+        y: (touch.clientY-y)/height*e.target.offsetHeight
+      })
+    }
+
+    return offsets;
   }
 
   snapHorizontal(tolerance: number = 20) {
