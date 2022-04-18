@@ -19,6 +19,7 @@ export class EditorComponent implements OnInit {
   fileDragging = false
   exporting = false
   @ViewChildren("SharePic") sharePicReferences!: QueryList<SharepicPreviewComponent>;
+  document = document
 
   @HostBinding('class.grabbing') grabbing: boolean = false
 
@@ -45,7 +46,7 @@ export class EditorComponent implements OnInit {
     }
   }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   @HostListener('window:resize', ['$event'])
   onResize(even:any) {

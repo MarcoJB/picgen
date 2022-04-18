@@ -183,3 +183,10 @@
 .logo.w {
   background-color: white;
 }
+
+.city {
+  position: absolute;
+  bottom: 17px;
+  right: 18px;
+  font-size: 22px;
+}

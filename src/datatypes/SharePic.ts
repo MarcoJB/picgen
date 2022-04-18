@@ -1,8 +1,9 @@
 export class SharePic {
   platform = "INSTAGRAM"
-  title = 'Überschrift'
-  subtitle = 'Unterüberschrift'
+  title = "Überschrift"
+  subtitle = "Unterüberschrift"
   subtitleColor = "white"
+  city = "Karlsruhe"
   copyright = '© Greenpeace Karlsruhe'
   copyrightColor = "black"
   logoScheme = "wg"
