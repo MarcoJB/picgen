@@ -166,8 +166,4 @@ export class EditorComponent implements OnInit {
       this.exporting = false;
     });
   }
-
-  formatLabel(value: number) {
-    return Math.round(value*value*100)/100;
-  }
 }
