@@ -141,9 +141,9 @@
 
       <div id="mainImageFilterConfig">
         Neutrales Grau
-        <button mat-icon-button (click)="generalService.choosingBalanceColor=true" 
+        <button mat-icon-button (click)="activateChoosingBalancingColor()" 
         [disabled]="!sharePicSet.sharePics[activeSharePic].mainImage">
-          <mat-icon>colorize</mat-icon>
+          <mat-icon [color]="generalService.choosingBalanceColor?'primary':''">colorize</mat-icon>
         </button>
 
         Helligkeit
@@ -203,7 +203,7 @@
       <button mat-flat-button color="primary" color="accent" id="export" (click)="exportActiveSharePic()">Exportieren</button>
     </div>
   </div>
-  <div class="sidenav-content">
+  <div class="sidenav-content mat-elevation-z6">
     <div id="previews">
       <div id="previewsGroup" [style.left.%]="-activeSharePic*100">
         <ng-container *ngFor="let sharepic of sharePicSet.sharePics; let i = index">

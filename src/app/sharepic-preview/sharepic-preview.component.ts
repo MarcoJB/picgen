@@ -61,6 +61,8 @@ export class SharepicPreviewComponent implements OnInit {
         
         this.preRenderCtx?.drawImage(this.image, 0, 0)
         this.resetImage()
+
+        this.applyBalanceFilter()
         this.applyFilters()
       })
     })
@@ -146,17 +148,24 @@ export class SharepicPreviewComponent implements OnInit {
   selectColor(event: MouseEvent) {
     if (this.generalService.choosingBalanceColor) {
       this.generalService.choosingBalanceColor = false
+      const x = Math.round(event.offsetX*this.image.naturalHeight/this.sharePic.mainImageHeight)
+      const y = Math.round(event.offsetY*this.image.naturalHeight/this.sharePic.mainImageHeight)
+      this.applyBalanceFilter(x, y)
+      this.applyFilters()
+    }
+  }
 
-      if (this.preRenderCtx !== null) {
-        const x = Math.round(event.offsetX*this.image.naturalHeight/this.sharePic.mainImageHeight)
-        const y = Math.round(event.offsetY*this.image.naturalHeight/this.sharePic.mainImageHeight)
-        const pointerIndex = (y*this.image.naturalWidth + x) * 4
-
+  applyBalanceFilter(refX?: number, refY?: number) {
+    if (this.preRenderCtx !== null) {
         this.preRenderCtx.drawImage(this.image, 0, 0)
         const imageData = this.preRenderCtx.getImageData(0, 0, this.image.naturalWidth, this.image.naturalHeight)
         const raw = imageData.data
 
-        this.sharePic.filterBalance = [raw[pointerIndex], raw[pointerIndex+1], raw[pointerIndex+2]]
+        if (refX !== undefined && refY !== undefined) {
+          const pointerIndex = (refY*this.image.naturalWidth + refX) * 4
+          this.sharePic.filterBalance = [raw[pointerIndex], raw[pointerIndex+1], raw[pointerIndex+2]]
+        }
+
         const grayAvg = this.sharePic.filterBalance.reduce((partialSum, a) => partialSum + a, 0) / 3
 
         for (let i = 0; i < raw.length; i += 4) {
@@ -170,29 +179,14 @@ export class SharepicPreviewComponent implements OnInit {
         }
 
         this.preRenderCtx.putImageData(imageData, 0, 0)
-        
-        
       }
-
-      /*
-          if (rgb[0] <= balanceRed) {
-            rgb[0] *= grayAvg/balanceRed
-          } else {
-            rgb[0] = 1 - (1-rgb[0])*(1-grayAvg)/(1-balanceRed)
-          }
-          if (rgb[1] <= balanceGreen) {
-            rgb[1] *= grayAvg/balanceGreen
-          } else {
-            rgb[1] = 1 - (1-rgb[1])*(1-grayAvg)/(1-balanceGreen)
-          }
-          if (rgb[2] <= balanceBlue) {
-            rgb[2] *= grayAvg/balanceBlue
-          } else {
-            rgb[2] = 1 - (1-rgb[2])*(1-grayAvg)/(1-balanceBlue)
-          }
-      */
-
-      this.applyFilters()
+  }
+  
+  @HostListener('window:click', ['$event'])
+  onClick(e: MouseEvent) {
+    if (this.generalService.choosingBalanceColor) {
+      this.generalService.choosingBalanceColor = false
+      e.preventDefault()
     }
   }
 
@@ -213,8 +207,6 @@ export class SharepicPreviewComponent implements OnInit {
   @HostListener('window:mousemove', ['$event'])
   drag(event: MouseEvent) {
     if (this.draggingElement !== null) {
-      const img = this.draggingElement
-
       this.sharePic.imagePosition.x = (event.clientX-this.dragStartPosition.x) / this.scaleFactor + this.imageStartPosition.x
       this.sharePic.imagePosition.y = (event.clientY-this.dragStartPosition.y) / this.scaleFactor + this.imageStartPosition.y
       this.snapHorizontal()
@@ -258,7 +250,30 @@ export class SharepicPreviewComponent implements OnInit {
     this.generalService.syncLocalSharePicSets()
   }
 
-  touchStartEnd(e: TouchEvent) {
+  touchStart(e: TouchEvent) {
+    if (!this.generalService.choosingBalanceColor) {
+      this.touchesChanged(e)
+    } else {
+      this.generalService.choosingBalanceColor = false
+
+      // @ts-ignore
+      const boundingRect = e.target.getBoundingClientRect();
+      const touchOffsetX = Math.round((e.touches[0].clientX - boundingRect.x)*this.image.naturalHeight/this.sharePic.mainImageHeight/this.scaleFactor)
+      const touchOffsetY = Math.round((e.touches[0].clientY - boundingRect.y)*this.image.naturalHeight/this.sharePic.mainImageHeight/this.scaleFactor)
+      this.applyBalanceFilter(touchOffsetX, touchOffsetY)
+      this.applyFilters()
+    }
+
+    e.preventDefault()
+  }
+
+  touchEnd(e: TouchEvent) {
+    this.touchesChanged(e)
+
+    e.preventDefault()
+  }
+
+  touchesChanged(e: TouchEvent) {
     this.activeTouches = e.touches.length
     
     if (e.touches.length == 0) {
@@ -280,8 +295,6 @@ export class SharepicPreviewComponent implements OnInit {
     this.imageStartPosition.x = this.sharePic.imagePosition.x
     this.imageStartPosition.y = this.sharePic.imagePosition.y
     this.imageStartHeight = this.sharePic.mainImageHeight
-
-    e.preventDefault()
   }
 
   touchMove(e: TouchEvent) {

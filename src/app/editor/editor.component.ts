@@ -19,6 +19,7 @@ export class EditorComponent implements OnInit {
   exporting = false
   @ViewChildren("SharePic") sharePicReferences!: QueryList<SharepicPreviewComponent>;
   document = document
+  setTimeout = setTimeout
 
   @HostBinding('class.grabbing') grabbing: boolean = false
 
@@ -165,5 +166,9 @@ export class EditorComponent implements OnInit {
       link.click()
       this.exporting = false;
     });
+  }
+
+  activateChoosingBalancingColor() {
+    setTimeout(() => this.generalService.choosingBalanceColor=true)
   }
 }

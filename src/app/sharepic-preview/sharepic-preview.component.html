@@ -4,7 +4,7 @@
     <div class="mainImageContainer" [class.cropped]="sharePic.cropImage">
       <canvas class="mainImage" #mainImage (mousedown)="activateDragging($event)" (click)="selectColor($event)"
             (wheel)="zoom($event)" [style.height.px]="sharePic.mainImageHeight"
-            (touchstart)="touchStartEnd($event)" (touchend)="touchStartEnd($event)" (touchmove)="touchMove($event)"
+            (touchstart)="touchStart($event)" (touchend)="touchEnd($event)" (touchmove)="touchMove($event)"
             [style.left.px]="sharePic.imagePosition.x" [style.top.px]="sharePic.imagePosition.y"></canvas>
     </div>
     <mat-list class="text" [class.noBackground]="!sharePic.backgroundImage" [class.noTitle]="!sharePic.title">
