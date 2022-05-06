@@ -17,6 +17,10 @@ export class SharePic {
   cropImage = false
   text = ""
   exportName = "SharePic"
+  filterBrightness = 1
+  filterContrast = 1
+  filterSaturation = 1
+  filterBalance = [1, 1, 1]
 
   constructor() { }
 }

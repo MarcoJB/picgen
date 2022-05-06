@@ -1,15 +1,14 @@
-import {Component, ElementRef, HostBinding, HostListener, Input, Output, OnInit, ViewChild, EventEmitter, AfterViewInit} from '@angular/core';
-import {SharePic} from "../../datatypes/SharePic";
-import html2canvas from "html2canvas";
-import {ListItem} from "../../datatypes/ListItem";
-import { GeneralService } from '../general.service';
+import {Component, ElementRef, HostBinding, HostListener, Input, Output, OnInit, ViewChild, EventEmitter} from '@angular/core';
+import {SharePic} from "../datatypes/SharePic";
+import {ListItem} from "../datatypes/ListItem";
+import {GeneralService} from '../general.service';
 
 @Component({
   selector: 'app-sharepic-preview',
   templateUrl: './sharepic-preview.component.html',
   styleUrls: ['./sharepic-preview.component.css']
 })
-export class SharepicPreviewComponent implements OnInit {
+export class SharepicPreviewComponent implements OnInit { 
   @Input() sharePic!: SharePic
   @Input() noElevation: boolean = false
   @Input() outline: boolean = false
@@ -17,7 +16,7 @@ export class SharepicPreviewComponent implements OnInit {
 
   saving = false
   scaleFactor = 1
-  @ViewChild('mainImage') mainImage!: ElementRef<HTMLImageElement>
+  @ViewChild('mainImage') mainImageCanvas!: ElementRef<HTMLCanvasElement>
   @ViewChild('previewContainer') previewContainer!: ElementRef<HTMLDivElement>
   @ViewChild('preview') preview!: ElementRef<HTMLDivElement>
   dragStartPosition = {x: 0, y: 0}
@@ -30,15 +29,42 @@ export class SharepicPreviewComponent implements OnInit {
   touchStartDistance = 0
   activeTouches = 0
   imageStartHeight = 0
+  image: HTMLImageElement
+  preRenderCanvas: HTMLCanvasElement
+  preRenderCtx: CanvasRenderingContext2D | null
+  canvas!: HTMLCanvasElement
+  ctx!: CanvasRenderingContext2D | null
+  
 
-  @HostBinding('class.grabbing') draggingElement: HTMLImageElement|null = null
+  @HostBinding('class.grabbing') draggingElement: HTMLCanvasElement|null = null
 
   constructor(private generalService: GeneralService,
-              private hostRef:ElementRef) { }
+  private hostRef:ElementRef) {
+    this.image = document.createElement("img")
+    this.preRenderCanvas = document.createElement("canvas")
+    this.preRenderCtx = this.preRenderCanvas.getContext("2d")
+  }
 
   ngOnInit() {
     setTimeout(() => {
       this.changeFormat()
+
+      this.canvas = this.mainImageCanvas.nativeElement
+      this.ctx = this.canvas.getContext("2d")
+
+      this.image.src = this.sharePic.mainImage
+      this.image.addEventListener("load", () => {
+        this.preRenderCanvas.height = this.image.naturalHeight
+        this.preRenderCanvas.width = this.image.naturalWidth
+        this.canvas.height = this.image.naturalHeight
+        this.canvas.width = this.image.naturalWidth
+        
+        this.preRenderCtx?.drawImage(this.image, 0, 0)
+        this.resetImage()
+
+        this.applyBalanceFilter()
+        this.applyFilters()
+      })
     })
   }
 
@@ -75,27 +101,32 @@ export class SharepicPreviewComponent implements OnInit {
   }
 
   resetImageSize() {
-    const img = this.mainImage.nativeElement
-
     if (this.sharePic.mainImageSize == "FULL_HEIGHT") {
       this.sharePic.mainImageHeight = this.imageHeight
     } else if (this.sharePic.mainImageSize == "FULL_WIDTH") {
-      this.sharePic.mainImageHeight = 1200 / img.naturalWidth * img.naturalHeight
+      this.sharePic.mainImageHeight = 1200 / this.image.naturalWidth * this.image.naturalHeight
     }
   }
 
-  resetHorizontalPositioning() {
-    const img = this.mainImage.nativeElement
+  applyFilters() {
+    if (this.ctx !== null) {
+      this.ctx.filter = `brightness(${this.sharePic.filterBrightness}) contrast(${this.sharePic.filterContrast}) saturate(${this.sharePic.filterSaturation})`
+      this.ctx.drawImage(this.preRenderCanvas, 0, 0)
+    }
 
+    this.generalService.syncLocalSharePicSets()
+  }
+
+  resetHorizontalPositioning() {
     switch (this.sharePic.mainImageHorizontalPositioning) {
       case "LEFT":
         this.sharePic.imagePosition.x = 0
         break
       case "CENTER":
-        this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)/2
+        this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/this.image.naturalHeight*this.image.naturalWidth)/2
         break
       case "RIGHT":
-        this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)
+        this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/this.image.naturalHeight*this.image.naturalWidth)
         break
     }
   }
@@ -114,14 +145,61 @@ export class SharepicPreviewComponent implements OnInit {
     }
   }
 
-  activateDragging(event: MouseEvent, imageElement: HTMLImageElement) {
-    this.grabStatusChange.emit(true)
+  selectColor(event: MouseEvent) {
+    if (this.generalService.choosingBalanceColor) {
+      this.generalService.choosingBalanceColor = false
+      const x = Math.round(event.offsetX*this.image.naturalHeight/this.sharePic.mainImageHeight)
+      const y = Math.round(event.offsetY*this.image.naturalHeight/this.sharePic.mainImageHeight)
+      this.applyBalanceFilter(x, y)
+      this.applyFilters()
+    }
+  }
 
-    this.draggingElement = imageElement
-    this.dragStartPosition.x = event.clientX
-    this.dragStartPosition.y = event.clientY
-    this.imageStartPosition.x = this.sharePic.imagePosition.x
-    this.imageStartPosition.y = this.sharePic.imagePosition.y
+  applyBalanceFilter(refX?: number, refY?: number) {
+    if (this.preRenderCtx !== null) {
+        this.preRenderCtx.drawImage(this.image, 0, 0)
+        const imageData = this.preRenderCtx.getImageData(0, 0, this.image.naturalWidth, this.image.naturalHeight)
+        const raw = imageData.data
+
+        if (refX !== undefined && refY !== undefined) {
+          const pointerIndex = (refY*this.image.naturalWidth + refX) * 4
+          this.sharePic.filterBalance = [raw[pointerIndex], raw[pointerIndex+1], raw[pointerIndex+2]]
+        }
+
+        const grayAvg = this.sharePic.filterBalance.reduce((partialSum, a) => partialSum + a, 0) / 3
+
+        for (let i = 0; i < raw.length; i += 4) {
+          for (let color = 0; color < 3; color++) {
+            if (raw[i+color] <= this.sharePic.filterBalance[color]) {
+              raw[i+color] *= grayAvg/this.sharePic.filterBalance[color]
+            } else {
+              raw[i+color] = 255 - (255-raw[i+color])*(255-grayAvg)/(255-this.sharePic.filterBalance[color])
+            }
+          }
+        }
+
+        this.preRenderCtx.putImageData(imageData, 0, 0)
+      }
+  }
+  
+  @HostListener('window:click', ['$event'])
+  onClick(e: MouseEvent) {
+    if (this.generalService.choosingBalanceColor) {
+      this.generalService.choosingBalanceColor = false
+      e.preventDefault()
+    }
+  }
+
+  activateDragging(event: MouseEvent) {
+    if (!this.generalService.choosingBalanceColor)  {
+      this.grabStatusChange.emit(true)
+
+      this.draggingElement = this.mainImageCanvas.nativeElement
+      this.dragStartPosition.x = event.clientX
+      this.dragStartPosition.y = event.clientY
+      this.imageStartPosition.x = this.sharePic.imagePosition.x
+      this.imageStartPosition.y = this.sharePic.imagePosition.y
+    }
 
     event.preventDefault()
   }
@@ -129,8 +207,6 @@ export class SharepicPreviewComponent implements OnInit {
   @HostListener('window:mousemove', ['$event'])
   drag(event: MouseEvent) {
     if (this.draggingElement !== null) {
-      const img = this.draggingElement
-
       this.sharePic.imagePosition.x = (event.clientX-this.dragStartPosition.x) / this.scaleFactor + this.imageStartPosition.x
       this.sharePic.imagePosition.y = (event.clientY-this.dragStartPosition.y) / this.scaleFactor + this.imageStartPosition.y
       this.snapHorizontal()
@@ -150,8 +226,6 @@ export class SharepicPreviewComponent implements OnInit {
   }
 
   zoom(event: WheelEvent) {
-    const img = this.mainImage.nativeElement
-
     const changeFactor = event.deltaY < 0 ? 1.05 : 1/1.05
 
     this.sharePic.mainImageHeight *= changeFactor
@@ -163,9 +237,9 @@ export class SharepicPreviewComponent implements OnInit {
     if (Math.abs(this.imageHeight - this.sharePic.mainImageHeight) < 1) {
       this.sharePic.mainImageSize = "FULL_HEIGHT"
       this.sharePic.mainImageHeight = this.imageHeight
-    } else if (Math.abs(1200 - this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth) < 1) {
+    } else if (Math.abs(1200 - this.sharePic.mainImageHeight/this.image.naturalHeight*this.image.naturalWidth) < 1) {
       this.sharePic.mainImageSize = "FULL_WIDTH"
-      this.sharePic.mainImageHeight = 1200/img.naturalWidth*img.naturalHeight
+      this.sharePic.mainImageHeight = 1200/this.image.naturalWidth*this.image.naturalHeight
     } else {
       this.sharePic.mainImageSize = "INDIVIDUAL"
     }
@@ -176,7 +250,30 @@ export class SharepicPreviewComponent implements OnInit {
     this.generalService.syncLocalSharePicSets()
   }
 
-  touchStartEnd(e: TouchEvent) {
+  touchStart(e: TouchEvent) {
+    if (!this.generalService.choosingBalanceColor) {
+      this.touchesChanged(e)
+    } else {
+      this.generalService.choosingBalanceColor = false
+
+      // @ts-ignore
+      const boundingRect = e.target.getBoundingClientRect();
+      const touchOffsetX = Math.round((e.touches[0].clientX - boundingRect.x)*this.image.naturalHeight/this.sharePic.mainImageHeight/this.scaleFactor)
+      const touchOffsetY = Math.round((e.touches[0].clientY - boundingRect.y)*this.image.naturalHeight/this.sharePic.mainImageHeight/this.scaleFactor)
+      this.applyBalanceFilter(touchOffsetX, touchOffsetY)
+      this.applyFilters()
+    }
+
+    e.preventDefault()
+  }
+
+  touchEnd(e: TouchEvent) {
+    this.touchesChanged(e)
+
+    e.preventDefault()
+  }
+
+  touchesChanged(e: TouchEvent) {
     this.activeTouches = e.touches.length
     
     if (e.touches.length == 0) {
@@ -198,14 +295,10 @@ export class SharepicPreviewComponent implements OnInit {
     this.imageStartPosition.x = this.sharePic.imagePosition.x
     this.imageStartPosition.y = this.sharePic.imagePosition.y
     this.imageStartHeight = this.sharePic.mainImageHeight
-
-    e.preventDefault()
   }
 
   touchMove(e: TouchEvent) {
     if (e.touches.length != this.activeTouches) return
-
-    const img = this.mainImage.nativeElement
     
     if (e.touches.length == 1) {
       const touchPositionX = e.touches[0].clientX
@@ -230,9 +323,9 @@ export class SharepicPreviewComponent implements OnInit {
       if (Math.abs(this.imageHeight - this.sharePic.mainImageHeight) < 50) {
         this.sharePic.mainImageSize = "FULL_HEIGHT"
         this.sharePic.mainImageHeight = this.imageHeight
-      } else if (Math.abs(1200 - this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth) < 50) {
+      } else if (Math.abs(1200 - this.sharePic.mainImageHeight/this.image.naturalHeight*this.image.naturalWidth) < 50) {
         this.sharePic.mainImageSize = "FULL_WIDTH"
-        this.sharePic.mainImageHeight = 1200/img.naturalWidth*img.naturalHeight
+        this.sharePic.mainImageHeight = 1200/this.image.naturalWidth*this.image.naturalHeight
       } else {
         this.sharePic.mainImageSize = "INDIVIDUAL"
       }
@@ -263,17 +356,15 @@ export class SharepicPreviewComponent implements OnInit {
   }
 
   snapHorizontal(tolerance: number = 20) {
-    const img = this.mainImage.nativeElement
-
     // Snapping in horizontal direction
     if (Math.abs(this.sharePic.imagePosition.x) < tolerance) {
       this.sharePic.imagePosition.x = 0
       this.sharePic.mainImageHorizontalPositioning = "LEFT"
-    } else if (Math.abs(this.sharePic.imagePosition.x - (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)/2) < tolerance) {
-      this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)/2
+    } else if (Math.abs(this.sharePic.imagePosition.x - (1200-this.sharePic.mainImageHeight/this.image.naturalHeight*this.image.naturalWidth)/2) < tolerance) {
+      this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/this.image.naturalHeight*this.image.naturalWidth)/2
       this.sharePic.mainImageHorizontalPositioning = "CENTER"
-    } else if (Math.abs(this.sharePic.imagePosition.x - (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)) < tolerance) {
-      this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/img.naturalHeight*img.naturalWidth)
+    } else if (Math.abs(this.sharePic.imagePosition.x - (1200-this.sharePic.mainImageHeight/this.image.naturalHeight*this.image.naturalWidth)) < tolerance) {
+      this.sharePic.imagePosition.x = (1200-this.sharePic.mainImageHeight/this.image.naturalHeight*this.image.naturalWidth)
       this.sharePic.mainImageHorizontalPositioning = "RIGHT"
     } else {
       this.sharePic.mainImageHorizontalPositioning = "INDIVIDUAL"
@@ -281,8 +372,6 @@ export class SharepicPreviewComponent implements OnInit {
   }
 
   snapVertical(tolerance: number = 20) {
-    const img = this.mainImage.nativeElement
-
     // Snapping in vertical direction
     if (Math.abs(this.sharePic.imagePosition.y) < tolerance) {
       this.sharePic.imagePosition.y = 0
@@ -311,5 +400,4 @@ export class SharepicPreviewComponent implements OnInit {
 
     return items
   }
-
 }

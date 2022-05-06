@@ -19,6 +19,10 @@
   font-family: "Helvetica Neue LT";
 }
 
+.preview > :not(.mainImageContainer) {
+  pointer-events: none;
+}
+
 ::ng-deep .darkMode .preview {
   background-color: #424242;
 }
