@@ -124,13 +124,15 @@ export class EditorComponent implements OnInit {
     }
   }
 
+  applyFilters() {
+    this.sharePicReferences.toArray()[this.activeSharePic].applyFilters()
+  }
+
   newSharePic() {
     this.sharePicSet.sharePics.push(new SharePic())
     this.switchActiveSharePic(+1)
-  }
 
-  applyFilters() {
-    this.sharePicReferences.toArray()[this.activeSharePic].applyFilters()
+    this.generalService.syncLocalSharePicSets()
   }
 
   deleteSharePic() {
@@ -144,6 +146,8 @@ export class EditorComponent implements OnInit {
       } else if (this.activeSharePic >= this.sharePicSet.sharePics.length) {
         this.switchActiveSharePic(-1)
       }
+
+      this.generalService.syncLocalSharePicSets()
     }
   }
 
